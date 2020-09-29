@@ -7,6 +7,11 @@
 #define DEFAULTLINEWIDTH    80
 #define DEFAULTBUFFERLENGTH 100
 
+int args_process(int argc, char **argv);
+int buffer_setup(char **argv);
+int buffer_clean(void);
+
+// configs: Program configuration
 struct {
 	FILE *input_stream;                 // Program input stream
 	unsigned int buffer_length;         // Initial buffer length
@@ -16,17 +21,28 @@ struct {
 	unsigned int input_stream_set : 1;  // Has input stream been set
 } configs;
 
+// buffer: Text buffer
 struct {
 	unsigned int length;       // Number of lines stored in the buffer
 	unsigned int current_line; // Current line in line buffer
 	char **line_ptr;           // Pointer to line buffer
 } buffer;
 
-enum global_modes { CMD, TXT };
+// modes: Program modes
+enum modes {
+	CMD, // Execute commands
+	TXT  // Manipulate text buffer
+};
 
-int args_process(int argc, char **argv);
-int buffer_setup(char **argv);
-int buffer_clean(void);
+// commands: Commands to be executed in CMD mode
+enum commands {
+	READ, // Load file contents
+	SETL, // Set the current line
+	NSRT, // Insert text at the start of the current line
+	APND, // Append text to the end of the current line
+	WRIT, // Write the buffer to a file
+	EXIT  // Exit the program
+};
 
 int main(int argc, char **argv)
 {
@@ -43,7 +59,7 @@ int main(int argc, char **argv)
 	while (fscanf(configs.input_stream, "%s", cmd) != EOF) {
 		switch (mode) {
 			case CMD: {
-				
+
 			} break;
 			case TXT: {
 
@@ -82,7 +98,7 @@ int args_process(int argc, char **argv)
 			}
 		}
 		// Buffer length: [--bl|--buffer-length]
-		if (!strcmp(*arg_ptr, "--bl") || !strcmp(*arg_ptr, "--buffer-length")) {
+		else if (!strcmp(*arg_ptr, "--bl") || !strcmp(*arg_ptr, "--buffer-length")) {
 			if (configs.buffer_length_set) {
 				printf("%s: invalid use: buffer length already set\n", *argv);
 				exit(1);
@@ -99,7 +115,7 @@ int args_process(int argc, char **argv)
 			}
 		}
 		// Line width: [--lw|--line-width]
-		if (!strcmp(*arg_ptr, "--lw") || !strcmp(*arg_ptr, "--line-width")) {
+		else if (!strcmp(*arg_ptr, "--lw") || !strcmp(*arg_ptr, "--line-width")) {
 			if (configs.line_width_set) {
 				printf("%s: invalid use: line width already set\n", *argv);
 				exit(1);
@@ -117,6 +133,7 @@ int args_process(int argc, char **argv)
 		}
 	}
 
+	free(error_str);
 	return 0;
 }
 
