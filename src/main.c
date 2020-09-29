@@ -22,42 +22,41 @@ struct {
 	char **line_ptr;           // Pointer to line buffer
 } buffer;
 
-int get_args(int argc, char **argv);
-int setup_buffer(char **argv);
-int clean_buffer(void);
+enum global_modes { CMD, TXT };
+
+int args_process(int argc, char **argv);
+int buffer_setup(char **argv);
+int buffer_clean(void);
 
 int main(int argc, char **argv)
 {
-	// Configuration defaults
 	configs.buffer_length = DEFAULTBUFFERLENGTH;
 	configs.line_width = DEFAULTLINEWIDTH;
 	configs.input_stream = stdin;
 
-	// Program setup
-	get_args(argc, argv);
-	setup_buffer(argv);
+	args_process(argc, argv);
+	buffer_setup(argv);
 
-	// Storage for user input
-	size_t cmd_size;
-	char *cmd = malloc(buffer.length * sizeof(char));
-	if (!cmd) {
-		printf("%s: memory error\n", *argv);
-		exit(1);
+	int mode = CMD;               // Current program mode
+	char cmd[DEFAULTLINEWIDTH+1]; // Storage for command input
+
+	while (fscanf(configs.input_stream, "%s", cmd) != EOF) {
+		switch (mode) {
+			case CMD: {
+				
+			} break;
+			case TXT: {
+
+			} break;
+		}
 	}
 
-	// Process user input
-	while (getline(&cmd, &cmd_size, configs.input_stream) >= 0) {
-
-	}
-
-	// Program cleanup
-	free(cmd);
-	clean_buffer();
+	buffer_clean();
 	return 0;
 }
 
-// get_args: Process the command line arguments
-int get_args(int argc, char **argv)
+// args_process: Process the command line arguments
+int args_process(int argc, char **argv)
 {
 	char *error_str = malloc(configs.line_width);
 	if (!error_str) {
@@ -121,8 +120,8 @@ int get_args(int argc, char **argv)
 	return 0;
 }
 
-// setup_buffer: Setup buffer members and allocate line memory
-int setup_buffer(char **argv)
+// buffer_setup: Setup buffer members and allocate line memory
+int buffer_setup(char **argv)
 {
 	buffer.length = configs.buffer_length;
 	buffer.current_line = 0;
@@ -143,8 +142,8 @@ int setup_buffer(char **argv)
 	return 0;
 }
 
-// clean_buffer: Free buffer memory
-int clean_buffer(void)
+// buffer_clean: Free buffer memory
+int buffer_clean(void)
 {
 	for (int i = 0; i < buffer.length; ++i) {
 		free(*(buffer.line_ptr+i));
