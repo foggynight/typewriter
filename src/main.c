@@ -10,6 +10,10 @@
 int args_process(int argc, char **argv);
 int buffer_setup(char **argv);
 int buffer_clean(void);
+enum modes cmd_process(char *cmd);
+void string_reverse(char *str);
+int decimal_reverse(int num);
+int decimal_remove_last_digit(int num);
 
 // configs: Program configuration
 struct {
@@ -24,7 +28,7 @@ struct {
 // buffer: Text buffer
 struct {
 	unsigned int length;       // Number of lines stored in the buffer
-	unsigned int current_line; // Current line in line buffer
+	unsigned int current_line; // Current line buffer index
 	char **line_ptr;           // Pointer to line buffer
 } buffer;
 
@@ -32,16 +36,6 @@ struct {
 enum modes {
 	CMD, // Execute commands
 	TXT  // Manipulate text buffer
-};
-
-// commands: Commands to be executed in CMD mode
-enum commands {
-	READ, // Load file contents
-	SETL, // Set the current line
-	NSRT, // Insert text at the start of the current line
-	APND, // Append text to the end of the current line
-	WRIT, // Write the buffer to a file
-	EXIT  // Exit the program
 };
 
 int main(int argc, char **argv)
@@ -56,15 +50,16 @@ int main(int argc, char **argv)
 	int mode = CMD;               // Current program mode
 	char cmd[DEFAULTLINEWIDTH+1]; // Storage for command input
 
-	while (fscanf(configs.input_stream, "%s", cmd) != EOF) {
-		switch (mode) {
-			case CMD: {
-
-			} break;
-			case TXT: {
-
-			} break;
+	int exit = 0;
+	while (!exit) switch (mode) {
+	case CMD: {
+		while (fscanf(configs.input_stream, "%s", cmd) != EOF) {
+			mode = cmd_process(cmd);
 		}
+	} break;
+	case TXT: {
+
+	} break;
 	}
 
 	buffer_clean();
@@ -141,7 +136,7 @@ int args_process(int argc, char **argv)
 int buffer_setup(char **argv)
 {
 	buffer.length = configs.buffer_length;
-	buffer.current_line = 0;
+	buffer.current_line = 1;
 	buffer.line_ptr = malloc(buffer.length * sizeof(char*));
 	if (!buffer.line_ptr) {
 		printf("%s: memory error\n", *argv);
@@ -149,7 +144,7 @@ int buffer_setup(char **argv)
 	}
 
 	for (int i = 0; i < buffer.length; ++i) {
-		*(buffer.line_ptr+i) = malloc(configs.line_width * sizeof(char));
+		*(buffer.line_ptr+i) = malloc(configs.line_width+1);
 		if (!*(buffer.line_ptr+i)) {
 			printf("%s: memory error\n", *argv);
 			exit(1);
@@ -168,4 +163,98 @@ int buffer_clean(void)
 	free(buffer.line_ptr);
 
 	return 0;
+}
+
+// cmd_process: Process and execute a command
+enum modes cmd_process(char *cmd)
+{
+	int cmd_line;              // Target line
+	char *cmd_id;              // Command ID string
+	int cmd_count;             // Number of times to execute
+	enum modes new_mode = CMD; // New program mode
+												   
+	// Get and remove the number prefix of cmd to get cmd_line, assigning the
+	// leftover string to cmd_temp.
+	char *cmd_temp;
+	if (*cmd != '.') {
+		cmd_line = strtol(cmd, &cmd_temp, 10);
+		if (!cmd_line) cmd_line = buffer.current_line;
+	}
+	else {
+		cmd_line = buffer.current_line;
+		++cmd;
+	}
+
+	// Reverse cmd_temp, get and remove the number prefix of cmd_temp, then
+	// reverse that number to get the cmd_count, assinging the leftover string
+	// to cmd_id.
+	strcat(cmd_temp, "1");
+	string_reverse(cmd_temp);
+	cmd_count = strtol(cmd_temp, &cmd_id, 10);
+	cmd_count = decimal_reverse(cmd_count);
+	cmd_count = decimal_remove_last_digit(cmd_count);
+	if (!cmd_count) cmd_count = 1;
+
+	if (strlen(cmd_id) != 1) {
+		printf("Invalid command.\n");
+	}
+	else {
+		switch (*cmd_id) {
+		case 'v': {
+
+		} break;
+		case 'r': {
+
+		} break;
+		case 's': {
+
+		} break;
+		case 'i': {
+
+		} break;
+		case 'a': {
+
+		} break;
+		case 'w': {
+
+		} break;
+		case 'q': {
+
+		} break;
+		default: {
+
+		} break;
+		}
+	}
+	return new_mode;
+}
+
+// string_reverse: Reverse a string in-place
+void string_reverse(char *str)
+{
+	char *end = str + strlen(str) - 1;
+	while (str < end) {
+		char temp;
+		temp = *str;
+		*str = *end;
+		*end = temp;
+		++str, --end;
+	}
+}
+
+// decimal_remove_last_digit: Remove the last digit of a decimal by return
+int decimal_remove_last_digit(int num)
+{
+	return num / 10;
+}
+
+// decimal_reverse: Reverse a decimal by return
+int decimal_reverse(int num)
+{
+	int rev = 0;
+	while (num) {
+		rev = rev*10 + num%10;
+		num /= 10;
+	}
+	return rev;
 }
