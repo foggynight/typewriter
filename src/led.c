@@ -1,3 +1,33 @@
+/////////////////////////////////////////////////////
+//                                                 //
+//              * led - Line EDitor *              //
+//                                                 //
+//                  ** MODES **                    //
+// CMD - Command Mode                              //
+// TXT - Text Mode                                 //
+//                                                 //
+//                 ** COMMANDS **                  //
+// Format: [LINE]COMMAND[COUNT]                    //
+//                                                 //
+// LINE: Target line                               //
+// COMMAND: Command to execute                     //
+// COUNT: Number of times to execute the command   //
+//                                                 //
+// By default, a command is executed 1 time on the //
+// current line.                                   //
+//                                                 //
+//               ** COMMAND LIST: **               //
+// v - view: View the entire file.                 //
+// r - read: Print a line to screen.               //
+// s - setline: Set the current line.              //
+// i - insert: Insert text at the start of a line. //
+// a - append: Append text to the end of a line.   //
+// w - write: Write the buffer to a file.          //
+// q - exit: Exit the program.                     //
+//                                                 //
+// Author: foggynight                              //
+/////////////////////////////////////////////////////
+
 #include <limits.h>
 #include <stdint.h>
 #include <stdio.h>
