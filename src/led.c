@@ -38,6 +38,7 @@
 #define DEFAULTBUFFERLENGTH 100
 
 int args_process(int argc, char **argv);
+void fatal_error(char *str, int code);
 int buffer_setup(char **argv);
 int buffer_clean(void);
 enum modes cmd_process(char *cmd);
@@ -48,11 +49,13 @@ int decimal_remove_last_digit(int num);
 // configs: Program configuration
 struct {
 	FILE *input_stream;                 // Program input stream
+	FILE *output_stream;                // Program output stream
 	unsigned int buffer_length;         // Initial buffer length
 	unsigned int line_width;            // Maximum line width
+	unsigned int input_stream_set : 1;  // Has input stream been set
+	unsigned int output_stream_set : 1; // Has output stream been set
 	unsigned int buffer_length_set : 1; // Has initial buffer length been set
 	unsigned int line_width_set : 1;    // Has maximum line width been set
-	unsigned int input_stream_set : 1;  // Has input stream been set
 } configs;
 
 // buffer: Text buffer
@@ -73,6 +76,7 @@ int main(int argc, char **argv)
 	configs.buffer_length = DEFAULTBUFFERLENGTH;
 	configs.line_width = DEFAULTLINEWIDTH;
 	configs.input_stream = stdin;
+	configs.output_stream = stdout;
 
 	args_process(argc, argv);
 	buffer_setup(argv);
@@ -100,61 +104,57 @@ int main(int argc, char **argv)
 int args_process(int argc, char **argv)
 {
 	char *error_str = malloc(configs.line_width);
-	if (!error_str) {
-		printf("%s: memory error\n", *argv);
-		exit(1);
-	}
+	if (!error_str) fatal_error("%s: memory error\n", 1);
 
 	for (char **arg_ptr = argv+1; argc > 1; --argc, ++arg_ptr) {
-		// Input stream: [--is|--input-stream]
-		if (!strcmp(*arg_ptr, "--is") || !strcmp(*arg_ptr, "--input-stream")) {
-			if (configs.input_stream_set) {
-				printf("%s: invalid use: input stream already set\n", *argv);
-				exit(1);
-			}
-			--argc, ++arg_ptr;
-			configs.input_stream = fopen(*arg_ptr, "r");
-			if (!configs.input_stream) {
-				printf("%s: memory error\n", *argv);
-				exit(1);
-			}
-			else {
-				configs.input_stream_set = 1;
-			}
-		}
 		// Buffer length: [--bl|--buffer-length]
-		else if (!strcmp(*arg_ptr, "--bl") || !strcmp(*arg_ptr, "--buffer-length")) {
-			if (configs.buffer_length_set) {
-				printf("%s: invalid use: buffer length already set\n", *argv);
-				exit(1);
-			}
+		if (!strcmp(*arg_ptr, "--bl") || !strcmp(*arg_ptr, "--buffer-length")) {
+			if (configs.buffer_length_set)
+				fatal_error("%s: invalid use: buffer length already set\n", 1);
+
 			--argc, ++arg_ptr;
 			int buffer_length = strtol(*arg_ptr, &error_str, 10);
-			if (*error_str || buffer_length < 1 || buffer_length > UINT_MAX) {
-				printf("%s: invalid buffer length\n", *argv);
-				exit(1);
-			}
-			else {
-				configs.buffer_length = buffer_length;
-				configs.buffer_length_set = 1;
-			}
+			if (*error_str || buffer_length < 1 || buffer_length > UINT_MAX)
+				fatal_error("%s: invalid buffer length\n", 1);
+
+			configs.buffer_length = buffer_length;
+			configs.buffer_length_set = 1;
 		}
 		// Line width: [--lw|--line-width]
 		else if (!strcmp(*arg_ptr, "--lw") || !strcmp(*arg_ptr, "--line-width")) {
-			if (configs.line_width_set) {
-				printf("%s: invalid use: line width already set\n", *argv);
-				exit(1);
-			}
+			if (configs.line_width_set)
+				fatal_error("%s: invalid use: line width already set\n", 1);
+
 			--argc, ++arg_ptr;
 			int line_width = strtol(*arg_ptr, &error_str, 10);
-			if (*error_str || line_width < 1 || line_width > UINT_MAX) {
-				printf("%s: invalid line width\n", *argv);
-				exit(1);
-			}
-			else {
-				configs.line_width = line_width;
-				configs.line_width_set = 1;
-			}
+			if (*error_str || line_width < 1 || line_width > UINT_MAX)
+				fatal_error("%s: invalid line width\n", 1);
+
+			configs.line_width = line_width;
+			configs.line_width_set = 1;
+		}
+		// Input stream: [--is|--input-stream]
+		else if (!strcmp(*arg_ptr, "--is") || !strcmp(*arg_ptr, "--input-stream")) {
+			if (configs.input_stream_set)
+				fatal_error("%s: invalid use: input stream already set\n", 1);
+
+			--argc, ++arg_ptr;
+			configs.input_stream = fopen(*arg_ptr, "r");
+			if (!configs.input_stream)
+				fatal_error("%s: memory error\n", 1);
+
+			configs.input_stream_set = 1;
+		}
+		// Output stream: Argument provided without a selector
+		else {
+			if (configs.output_stream_set)
+				fatal_error("%s: invalid use: output stream already set\n", 1);
+
+			configs.output_stream = fopen(*argv, "w");
+			if (!configs.output_stream)
+				fatal_error("%s: memory error\n", 1);
+
+			configs.output_stream_set = 1;
 		}
 	}
 
@@ -168,17 +168,11 @@ int buffer_setup(char **argv)
 	buffer.length = configs.buffer_length;
 	buffer.current_line = 1;
 	buffer.line_ptr = malloc(buffer.length * sizeof(char*));
-	if (!buffer.line_ptr) {
-		printf("%s: memory error\n", *argv);
-		exit(1);
-	}
+	if (!buffer.line_ptr) fatal_error("%s: memory error\n", 1);
 
 	for (int i = 0; i < buffer.length; ++i) {
 		*(buffer.line_ptr+i) = malloc(configs.line_width+1);
-		if (!*(buffer.line_ptr+i)) {
-			printf("%s: memory error\n", *argv);
-			exit(1);
-		}
+		if (!*(buffer.line_ptr+i)) fatal_error("%s: memory error\n", 1);
 	}
 
 	return 0;
@@ -257,6 +251,13 @@ enum modes cmd_process(char *cmd)
 		}
 	}
 	return new_mode;
+}
+
+// fatal_error: Print error message and exit program with an error code
+void fatal_error(char *str, int code)
+{
+	printf("%s\n", str);
+	exit(code);
 }
 
 // string_reverse: Reverse a string in-place
