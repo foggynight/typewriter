@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=
+CFLAGS=-g
 
 SRCS=$(wildcard src/*.c)
 OBJS=$(SRCS:%.c=%.o)
