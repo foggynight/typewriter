@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-g
+CFLAGS=-Wall -Wpedantic -g
 
 SRCS=$(wildcard src/*.c)
 OBJS=$(SRCS:%.c=%.o)

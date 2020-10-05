@@ -17,7 +17,8 @@
 //   number to be incremented between commands.        //
 //                                                     //
 //   By default, a command is executed 1 time on the   //
-//   current line.                                     //
+//   current line, and most commands increment the     //
+//   line number.                                      //
 //                                                     //
 //                 ** COMMAND LIST: **                 //
 //   v - view: View the entire file                    //
@@ -42,15 +43,6 @@
 #define DEFAULTLINEWIDTH    80
 #define DEFAULTBUFFERLENGTH 100
 
-int args_process(int argc, char **argv);
-void fatal_error(char *str, int code);
-int buffer_setup(void);
-int buffer_clean(void);
-enum modes cmd_process(void);
-void string_reverse(char *str);
-int decimal_reverse(int num);
-int decimal_remove_last_digit(int num);
-
 // configs: Program configuration
 struct {
 	FILE *input_stream;                 // Program input stream
@@ -65,8 +57,9 @@ struct {
 
 // buffer: Line buffer and buffer state
 struct {
-	size_t length;       // Number of lines stored in the buffer
-	size_t current_line; // Current line buffer index
+	size_t length;       // Number of lines allocated in memory
+	size_t last_line;    // Index of the last line filled with text
+	size_t current_line; // Current line index for user commands
 	char **line_ptr;     // Pointer to line buffer
 } buffer;
 
@@ -76,6 +69,15 @@ enum modes {
 	TXT, // Manipulate text buffer
 	EXIT // Exit the program
 };
+
+int args_process(int argc, char **argv);
+void fatal_error(char *str, int code);
+void buffer_setup(void);
+void buffer_clean(void);
+enum modes cmd_process(void);
+void string_reverse(char *str);
+int decimal_reverse(int num);
+int decimal_remove_last_digit(int num);
 
 char *prog_name; // Name of the program
 
@@ -108,40 +110,6 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-// buffer_setup: Setup buffer members and allocate line memory
-int buffer_setup(void)
-{
-	buffer.length = configs.buffer_length;
-	buffer.current_line = 1;
-	buffer.line_ptr = malloc(buffer.length * sizeof(char*));
-	if (!buffer.line_ptr) fatal_error("memory error", 1);
-
-	for (size_t i = 0; i < buffer.length; ++i) {
-		*(buffer.line_ptr+i) = malloc(configs.line_width+1);
-		if (!*(buffer.line_ptr+i)) fatal_error("memory error", 1);
-	}
-
-	// Copy output stream content into line buffer
-	if (configs.output_stream != stdout) for (
-		size_t count = 0, width = configs.line_width+1;
-		getline(buffer.line_ptr+count, &width, configs.output_stream) > 0;
-		++count
-	);
-
-	return 0;
-}
-
-// buffer_clean: Free buffer memory
-int buffer_clean(void)
-{
-	for (int i = 0; i < buffer.length; ++i) {
-		free(*(buffer.line_ptr+i));
-	}
-	free(buffer.line_ptr);
-
-	return 0;
-}
-
 // cmd_process: Read, process and execute a command
 enum modes cmd_process(void)
 {
@@ -170,15 +138,15 @@ enum modes cmd_process(void)
 	cmd_count = decimal_remove_last_digit(cmd_count);
 	if (!cmd_count) cmd_count = 1;
 
-	printf("LINE: %d\nID: %s\nCOUNT: %d\n", cmd_line, cmd_id, cmd_count);
-
 	if (strlen(cmd_id) != 1) {
 		fprintf(stderr, "Invalid command.\n");
 	}
 	else {
 		switch (*cmd_id) {
 		case 'v': {
-
+			for (int i = 0; i <= buffer.last_line; ++i) {
+				printf("%s", *(buffer.line_ptr+i));
+			}
 		} break;
 		case 'r': {
 
@@ -208,40 +176,6 @@ enum modes cmd_process(void)
 	}
 
 	return new_mode;
-}
-
-// fatal_error: Print error message and exit program with an error code
-void fatal_error(char *str, int code)
-{
-	fprintf(stderr, "%s: %s\n", prog_name, str);
-	exit(code);
-}
-
-// string_reverse: Reverse a string in-place
-void string_reverse(char *s)
-{
-	for (char *e = s+strlen(s)-1; s < e; ++s, --e) {
-		char temp = *s;
-		*s = *e;
-		*e = temp;
-	}
-}
-
-// decimal_remove_last_digit: Remove the last digit of a decimal by return
-int decimal_remove_last_digit(int num)
-{
-	return num / 10;
-}
-
-// decimal_reverse: Reverse a decimal by return
-int decimal_reverse(int num)
-{
-	int rev = 0;
-	while (num) {
-		rev = rev*10 + num%10;
-		num /= 10;
-	}
-	return rev;
 }
 
 // args_process: Process the command line arguments
@@ -294,9 +228,11 @@ int args_process(int argc, char **argv)
 			if (configs.output_stream_set)
 				fatal_error("invalid use: output stream already set", 1);
 
-			configs.output_stream = fopen(*argv, "w");
-			if (!configs.output_stream)
-				fatal_error("memory error", 1);
+			configs.output_stream = fopen(*arg_ptr, "r+");
+			if (!configs.output_stream) {
+				printf("creating file: %s\n", *arg_ptr);
+				configs.output_stream = fopen(*arg_ptr, "w+");
+			}
 
 			configs.output_stream_set = 1;
 		}
@@ -304,4 +240,73 @@ int args_process(int argc, char **argv)
 
 	free(error_str);
 	return 0;
+}
+
+// buffer_setup: Setup buffer members and allocate line memory
+void buffer_setup(void)
+{
+	buffer.length = configs.buffer_length;
+	buffer.current_line = 1;
+	buffer.line_ptr = malloc(buffer.length * sizeof(char*));
+	if (!buffer.line_ptr) fatal_error("memory error", 1);
+
+	// Needs space for the line, a newline character and null
+	for (size_t i = 0; i < buffer.length; ++i) {
+		*(buffer.line_ptr+i) = malloc(configs.line_width + 2);
+		if (!*(buffer.line_ptr+i)) fatal_error("memory error", 1);
+	}
+
+	// Copy output stream content into line buffer
+	if (configs.output_stream != stdout) {
+		size_t count, width;
+		for (
+			count = 0, width = configs.line_width + 2;
+			getline(buffer.line_ptr+count, &width, configs.output_stream) != EOF;
+			++count
+		);
+		buffer.last_line = count;
+	}
+}
+
+// buffer_clean: Free buffer memory
+void buffer_clean(void)
+{
+	for (int i = 0; i < buffer.length; ++i) {
+		free(*(buffer.line_ptr+i));
+	}
+	free(buffer.line_ptr);
+}
+
+// string_reverse: Reverse a string in-place
+void string_reverse(char *s)
+{
+	for (char *e = s+strlen(s)-1; s < e; ++s, --e) {
+		char temp = *s;
+		*s = *e;
+		*e = temp;
+	}
+}
+
+// decimal_remove_last_digit: Remove the last digit of a decimal by return
+int decimal_remove_last_digit(int num)
+{
+	return num / 10;
+}
+
+// decimal_reverse: Reverse a decimal by return
+int decimal_reverse(int num)
+{
+	int rev = 0;
+	while (num) {
+		rev = rev*10 + num%10;
+		num /= 10;
+	}
+	return rev;
+}
+
+// fatal_error: Print error message and exit program with an error code
+void fatal_error(char *str, int code)
+{
+	fprintf(stderr, "%s: %s\n", prog_name, str);
+	exit(code);
 }
