@@ -145,11 +145,11 @@ enum modes cmd_process(void)
 		switch (*cmd_id) {
 		case 'v': {
 			for (int i = 0; i <= buffer.last_line; ++i) {
-				printf("%s", *(buffer.line_ptr+i));
+				printf("%s", *(buffer.line_ptr + i));
 			}
 		} break;
 		case 'r': {
-
+			printf("%s", *(buffer.line_ptr + buffer.current_line));
 		} break;
 		case 's': {
 
