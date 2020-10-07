@@ -11,18 +11,22 @@
 //                                                     //
 //   LINE: Target line                                 //
 //   COMMAND: Command to execute                       //
-//   COUNT: Number of times to execute the command     //
+//   COUNT: Number of times to execute                 //
+//                                                     //
+//   Including a target line sets the current line     //
+//   to that target before executing a command.        //
 //                                                     //
 //   Repeating a command using count causes the line   //
 //   number to be incremented between commands.        //
 //                                                     //
 //   By default, a command is executed 1 time on the   //
 //   current line, and most commands increment the     //
-//   line number.                                      //
+//   current line number.                              //
 //                                                     //
 //                 ** COMMAND LIST: **                 //
-//   v - view: View the entire file                    //
-//   r - read: Print a line to screen                  //
+//   f - file: Open or create a file                   //
+//   v - view: Print the whole line buffer             //
+//   r - read: Print the current line                  //
 //   s - setline: Set the current line                 //
 //   i - insert: Insert text at the start of a line    //
 //   a - append: Append text to the end of a line      //
@@ -58,7 +62,7 @@ struct {
 // buffer: Line buffer and buffer state
 struct {
 	size_t length;       // Number of lines allocated in memory
-	size_t last_line;    // Index of the last line filled with text
+	size_t last_line;    // End of the lines filled with text
 	size_t current_line; // Current line index for user commands
 	char **line_ptr;     // Pointer to line buffer
 } buffer;
@@ -73,6 +77,7 @@ enum modes {
 int args_process(int argc, char **argv);
 void fatal_error(char *str, int code);
 void buffer_setup(void);
+void buffer_load(void);
 void buffer_clean(void);
 enum modes cmd_process(void);
 void string_reverse(char *str);
@@ -142,14 +147,40 @@ enum modes cmd_process(void)
 		fprintf(stderr, "Invalid command.\n");
 	}
 	else {
-		switch (*cmd_id) {
+		while (cmd_count--) switch (*cmd_id) {
+		case 'f': {
+			char file_name[128];
+			printf("Enter filename: ");
+			scanf("%128s", file_name);
+			getchar();
+
+			if (configs.output_stream != stdout) {
+				free(configs.output_stream);
+			}
+			configs.output_stream = fopen(file_name, "r+");
+
+			if (configs.output_stream) {
+				printf("Editing file: %s\n", file_name);
+			}
+			else {
+				printf("Creating file: %s\n", file_name);
+				configs.output_stream = fopen(file_name, "w+");
+			}
+
+			buffer_load();
+		} break;
 		case 'v': {
-			for (int i = 0; i <= buffer.last_line; ++i) {
-				printf("%s", *(buffer.line_ptr + i));
+			for (size_t i = 0; i < buffer.last_line; ++i) {
+				printf("%zu: %s", i+1, *(buffer.line_ptr + i));
 			}
 		} break;
 		case 'r': {
-			printf("%s", *(buffer.line_ptr + buffer.current_line));
+			if (buffer.current_line <= buffer.last_line) {
+				printf("%zu: %s",
+					buffer.current_line,
+					*(buffer.line_ptr + buffer.current_line - 1)
+				);
+			}
 		} break;
 		case 's': {
 
@@ -229,8 +260,11 @@ int args_process(int argc, char **argv)
 				fatal_error("invalid use: output stream already set", 1);
 
 			configs.output_stream = fopen(*arg_ptr, "r+");
-			if (!configs.output_stream) {
-				printf("creating file: %s\n", *arg_ptr);
+			if (configs.output_stream) {
+				printf("Editing file: %s\n", *arg_ptr);
+			}
+			else {
+				printf("Creating file: %s\n", *arg_ptr);
 				configs.output_stream = fopen(*arg_ptr, "w+");
 			}
 
@@ -246,26 +280,32 @@ int args_process(int argc, char **argv)
 void buffer_setup(void)
 {
 	buffer.length = configs.buffer_length;
-	buffer.current_line = 1;
 	buffer.line_ptr = malloc(buffer.length * sizeof(char*));
 	if (!buffer.line_ptr) fatal_error("memory error", 1);
 
 	// Needs space for the line, a newline character and null
 	for (size_t i = 0; i < buffer.length; ++i) {
-		*(buffer.line_ptr+i) = malloc(configs.line_width + 2);
+		*(buffer.line_ptr+i) = calloc(1, configs.line_width + 2);
 		if (!*(buffer.line_ptr+i)) fatal_error("memory error", 1);
 	}
 
-	// Copy output stream content into line buffer
 	if (configs.output_stream != stdout) {
-		size_t count, width;
-		for (
-			count = 0, width = configs.line_width + 2;
-			getline(buffer.line_ptr+count, &width, configs.output_stream) != EOF;
-			++count
-		);
-		buffer.last_line = count;
+		buffer_load();
 	}
+}
+
+// buffer_load: Load a file into the buffer
+void buffer_load(void)
+{
+	buffer.current_line = 1;
+
+	size_t count, width;
+	for (
+		count = 0, width = configs.line_width + 2;
+		getline(buffer.line_ptr+count, &width, configs.output_stream) != EOF;
+		++count
+	);
+	buffer.last_line = count;
 }
 
 // buffer_clean: Free buffer memory
