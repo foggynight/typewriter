@@ -1,0 +1,10 @@
+*
+!src
+src/*
+
+!*.md
+!.gitignore
+!makefile
+
+!src/*.h
+!src/*.c
