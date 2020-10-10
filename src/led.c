@@ -14,7 +14,8 @@
 //   COUNT: Number of times to execute                 //
 //                                                     //
 //   Including a target line sets the current line     //
-//   to that target before executing a command.        //
+//   to that target before executing a command. Some   //
+//   commands may be repeated using count.             //
 //                                                     //
 //   Repeating a command using count causes the line   //
 //   number to be incremented between commands.        //
@@ -99,16 +100,18 @@ int main(int argc, char **argv)
 
 	int exit = 0;          // Exit flag
 	enum modes mode = CMD; // Current program mode
-	while (!exit) switch (mode) {
-	case CMD: {
-		mode = cmd_process();
-	} break;
-	case TXT: {
+	while (!exit) {
+		switch (mode) {
+		case CMD: {
+			mode = cmd_process();
+		} break;
+		case TXT: {
 
-	} break;
-	case EXIT: {
-		exit = 1;
-	} break;
+		} break;
+		case EXIT: {
+			exit = 1;
+		} break;
+		}
 	}
 
 	buffer_clean();
@@ -119,7 +122,7 @@ int main(int argc, char **argv)
 enum modes cmd_process(void)
 {
 	static char cmd[DEFAULTLINEWIDTH+1]; // Storage for command input
-	int cmd_line;                        // Target line
+	size_t cmd_line;                     // Target line
 	char *cmd_id;                        // Command ID string
 	int cmd_count;                       // Number of times to execute
 	enum modes new_mode = CMD;           // New program mode
@@ -132,7 +135,8 @@ enum modes cmd_process(void)
 	// leftover string to cmd_temp.
 	char *cmd_temp;
 	cmd_line = strtol(cmd, &cmd_temp, 10);
-	if (!cmd_line) cmd_line = buffer.current_line;
+	if (!cmd_line)
+		cmd_line = buffer.current_line;
 
 	// Get and remove the number suffix of cmd_temp to get cmd_count, assigning
 	// the leftover string to cmd_id.
@@ -141,13 +145,14 @@ enum modes cmd_process(void)
 	cmd_count = strtol(cmd_temp, &cmd_id, 10);
 	cmd_count = decimal_reverse(cmd_count);
 	cmd_count = decimal_remove_last_digit(cmd_count);
-	if (!cmd_count) cmd_count = 1;
+	if (!cmd_count)
+		cmd_count = 1;
 
 	if (strlen(cmd_id) != 1) {
-		fprintf(stderr, "Invalid command.\n");
+		fprintf(stderr, "Invalid command\n");
 	}
 	else {
-		while (cmd_count--) switch (*cmd_id) {
+		switch (*cmd_id) {
 		case 'f': {
 			char file_name[128];
 			printf("Enter filename: ");
@@ -155,6 +160,7 @@ enum modes cmd_process(void)
 			getchar();
 
 			if (configs.output_stream != stdout) {
+				fclose(configs.output_stream);
 				free(configs.output_stream);
 			}
 			configs.output_stream = fopen(file_name, "r+");
@@ -175,15 +181,40 @@ enum modes cmd_process(void)
 			}
 		} break;
 		case 'r': {
-			if (buffer.current_line <= buffer.last_line) {
-				printf("%zu: %s",
-					buffer.current_line,
-					*(buffer.line_ptr + buffer.current_line - 1)
-				);
+			if (cmd_line == buffer.current_line) {
+				if (buffer.current_line <= buffer.last_line) {
+					printf("%zu: %s",
+						buffer.current_line,
+						*(buffer.line_ptr + buffer.current_line - 1)
+					);
+					++buffer.current_line;
+				}
+				else {
+					printf("EOF\n");
+				}
+			}
+			else {
+				if (cmd_line <= buffer.last_line) {
+					printf("%zu: %s",
+						cmd_line,
+						*(buffer.line_ptr + cmd_line - 1)
+					);
+				}
+				else {
+					printf("EOF\n");
+				}
 			}
 		} break;
 		case 's': {
-
+			if (cmd_line < 1) {
+				printf("Invalid line number\n");
+			}
+			else if (cmd_line > buffer.last_line) {
+				printf("EOF\n");
+			}
+			else {
+				buffer.current_line = cmd_line;
+			}
 		} break;
 		case 'i': {
 
@@ -201,7 +232,7 @@ enum modes cmd_process(void)
 
 		} break;
 		default: {
-			fprintf(stderr, "Invalid command.\n");
+			fprintf(stderr, "Invalid command\n");
 		} break;
 		}
 	}
