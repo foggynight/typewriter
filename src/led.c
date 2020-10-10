@@ -1,43 +1,37 @@
-/////////////////////////////////////////////////////////
-//                                                     //
-//                * led - Line EDitor *                //
-//                                                     //
-//                    ** MODES **                      //
-//   CMD - Command Mode                                //
-//   TXT - Text Mode                                   //
-//                                                     //
-//                   ** COMMANDS **                    //
-//   Format: [LINE]COMMAND[COUNT]                      //
-//                                                     //
-//   LINE: Target line                                 //
-//   COMMAND: Command to execute                       //
-//   COUNT: Number of times to execute                 //
-//                                                     //
-//   Including a target line sets the current line     //
-//   to that target before executing a command. Some   //
-//   commands may be repeated using count.             //
-//                                                     //
-//   Repeating a command using count causes the line   //
-//   number to be incremented between commands.        //
-//                                                     //
-//   By default, a command is executed 1 time on the   //
-//   current line, and most commands increment the     //
-//   current line number.                              //
-//                                                     //
-//                 ** COMMAND LIST: **                 //
-//   f - file: Open or create a file                   //
-//   v - view: Print the whole line buffer             //
-//   r - read: Print the current line                  //
-//   s - setline: Set the current line                 //
-//   i - insert: Insert text at the start of a line    //
-//   a - append: Append text to the end of a line      //
-//   c - change: Replace text at the given line        //
-//   w - write: Write the buffer to a file             //
-//   q - exit: Exit the program                        //
-//                                                     //
-//   Author: foggynight                                //
-//                                                     //
-/////////////////////////////////////////////////////////
+/*
+ * * led - Line EDitor *
+ *
+ * ** COMMANDS **
+ * Format: [LINE]COMMAND[COUNT]
+ *
+ * LINE: Target line
+ * COMMAND: Command to execute
+ * COUNT: Number of times to execute
+ *
+ * By default, a command is executed 1 time on the current line.
+ *
+ * Including a target line sets the current line to that target before
+ * executing a command. Commands that act on a line will increment the
+ * line number after being executed.
+ *
+ * Commands that modify the line buffer may be repeated using count.
+ * Repeating a command will cause the line number to be incremented
+ * between executions.
+ *
+ * ** COMMAND LIST **
+ * f - file: Open or create a file
+ * v - view: Print the whole line buffer
+ * r - read: Print the current line
+ * s - setline: Set the current line
+ * l - line: Print the current line number
+ * i - insert: Insert text at the start of a line
+ * a - append: Append text to the end of a line
+ * c - change: Replace text at the given line
+ * w - write: Write the buffer to a file
+ * q - exit: Exit the program
+ *
+ * Author: foggynight
+ */
 
 #include <limits.h>
 #include <stdint.h>
@@ -68,24 +62,17 @@ struct {
 	char **line_ptr;     // Pointer to line buffer
 } buffer;
 
-// modes: Program modes
-enum modes {
-	CMD, // Execute commands
-	TXT, // Manipulate text buffer
-	EXIT // Exit the program
-};
-
 int args_process(int argc, char **argv);
 void fatal_error(char *str, int code);
 void buffer_setup(void);
 void buffer_load(void);
 void buffer_clean(void);
-enum modes cmd_process(void);
+int cmd_process(void);
 void string_reverse(char *str);
 int decimal_reverse(int num);
 int decimal_remove_last_digit(int num);
 
-char *prog_name; // Name of the program
+char *prog_name;
 
 int main(int argc, char **argv)
 {
@@ -98,20 +85,9 @@ int main(int argc, char **argv)
 	args_process(argc, argv);
 	buffer_setup();
 
-	int exit = 0;          // Exit flag
-	enum modes mode = CMD; // Current program mode
+	int exit = 0;
 	while (!exit) {
-		switch (mode) {
-		case CMD: {
-			mode = cmd_process();
-		} break;
-		case TXT: {
-
-		} break;
-		case EXIT: {
-			exit = 1;
-		} break;
-		}
+		exit = cmd_process();
 	}
 
 	buffer_clean();
@@ -119,16 +95,15 @@ int main(int argc, char **argv)
 }
 
 // cmd_process: Read, process and execute a command
-enum modes cmd_process(void)
+int cmd_process(void)
 {
 	static char cmd[DEFAULTLINEWIDTH+1]; // Storage for command input
 	size_t cmd_line;                     // Target line
 	char *cmd_id;                        // Command ID string
 	int cmd_count;                       // Number of times to execute
-	enum modes new_mode = CMD;           // New program mode
 
 	if (fscanf(configs.input_stream, "%s", cmd) == EOF) {
-		return EXIT;
+		return 1;
 	}
 
 	// Get and remove the number prefix of cmd to get cmd_line, assigning the
@@ -194,6 +169,9 @@ enum modes cmd_process(void)
 				printf("EOF\n");
 			}
 		} break;
+		case 'l': {
+			printf("Line: %zu\n", buffer.current_line);
+		} break;
 		case 's': {
 			if (cmd_line < 1) {
 				printf("Invalid line number\n");
@@ -202,6 +180,7 @@ enum modes cmd_process(void)
 				printf("EOF\n");
 			}
 			else {
+				printf("Set Line: %zu\n", cmd_line);
 				buffer.current_line = cmd_line;
 			}
 		} break;
@@ -215,14 +194,14 @@ enum modes cmd_process(void)
 
 		} break;
 		case 'w': {
-			printf("Writing to file\n");
+			printf("Writing file\n");
 			for (size_t i = 0; i < buffer.last_line; ++i) {
 				fprintf(configs.output_stream, "%s", *(buffer.line_ptr + i));
 			}
 		} break;
 		case 'q': {
 			printf("Exiting program\n");
-			return EXIT;
+			return 1;
 		} break;
 		default: {
 			fprintf(stderr, "Invalid command\n");
@@ -230,7 +209,7 @@ enum modes cmd_process(void)
 		}
 	}
 
-	return new_mode;
+	return 0;
 }
 
 // args_process: Process the command line arguments
