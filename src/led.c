@@ -62,21 +62,21 @@ struct {
 	char **line_ptr;     // Pointer to line buffer
 } buffer;
 
-int args_process(int argc, char **argv);
-void fatal_error(char *str, int code);
+void args_process(int argc, char **argv);
+int cmd_process(void);
 void buffer_setup(void);
 void buffer_load(void);
 void buffer_clean(void);
-int cmd_process(void);
 void string_reverse(char *str);
 int decimal_reverse(int num);
 int decimal_remove_last_digit(int num);
+void fatal_error(char *str, int code);
 
-char *prog_name;
+char *program_name;
 
 int main(int argc, char **argv)
 {
-	prog_name = *argv;
+	program_name = *argv;
 	configs.input_stream = stdin;
 	configs.output_stream = stdout;
 	configs.line_width = DEFAULTLINEWIDTH;
@@ -94,7 +94,73 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-// cmd_process: Read, process and execute a command
+// args_process: Process the command line arguments
+void args_process(int argc, char **argv)
+{
+	char *error_str = malloc(configs.line_width);
+	if (!error_str) fatal_error("memory error", 1);
+
+	for (char **arg_ptr = argv+1; argc > 1; --argc, ++arg_ptr) {
+		// Buffer length: [--bl|--buffer-length]
+		if (!strcmp(*arg_ptr, "--bl") || !strcmp(*arg_ptr, "--buffer-length")) {
+			if (configs.buffer_length_set)
+				fatal_error("invalid use: buffer length already set", 1);
+
+			--argc, ++arg_ptr;
+			int buffer_length = strtol(*arg_ptr, &error_str, 10);
+			if (*error_str || buffer_length < 1 || buffer_length > UINT_MAX)
+				fatal_error("invalid buffer length", 1);
+
+			configs.buffer_length = buffer_length;
+			configs.buffer_length_set = 1;
+		}
+		// Line width: [--lw|--line-width]
+		else if (!strcmp(*arg_ptr, "--lw") || !strcmp(*arg_ptr, "--line-width")) {
+			if (configs.line_width_set)
+				fatal_error("invalid use: line width already set", 1);
+
+			--argc, ++arg_ptr;
+			int line_width = strtol(*arg_ptr, &error_str, 10);
+			if (*error_str || line_width < 1 || line_width > UINT_MAX)
+				fatal_error("invalid line width", 1);
+
+			configs.line_width = line_width;
+			configs.line_width_set = 1;
+		}
+		// Input stream: [--is|--input-stream]
+		else if (!strcmp(*arg_ptr, "--is") || !strcmp(*arg_ptr, "--input-stream")) {
+			if (configs.input_stream_set)
+				fatal_error("invalid use: input stream already set", 1);
+
+			--argc, ++arg_ptr;
+			configs.input_stream = fopen(*arg_ptr, "r");
+			if (!configs.input_stream)
+				fatal_error("memory error", 1);
+
+			configs.input_stream_set = 1;
+		}
+		// Output stream: Argument provided without a selector
+		else {
+			if (configs.output_stream_set)
+				fatal_error("invalid use: output stream already set", 1);
+
+			configs.output_stream = fopen(*arg_ptr, "r+");
+			if (configs.output_stream) {
+				printf("Editing file: %s\n", *arg_ptr);
+			}
+			else {
+				printf("Creating file: %s\n", *arg_ptr);
+				configs.output_stream = fopen(*arg_ptr, "w+");
+			}
+
+			configs.output_stream_set = 1;
+		}
+	}
+
+	free(error_str);
+}
+
+// cmd_process: Read, process and execute a command, true implies exit
 int cmd_process(void)
 {
 	static char cmd[DEFAULTLINEWIDTH+1]; // Storage for command input
@@ -212,73 +278,6 @@ int cmd_process(void)
 	return 0;
 }
 
-// args_process: Process the command line arguments
-int args_process(int argc, char **argv)
-{
-	char *error_str = malloc(configs.line_width);
-	if (!error_str) fatal_error("memory error", 1);
-
-	for (char **arg_ptr = argv+1; argc > 1; --argc, ++arg_ptr) {
-		// Buffer length: [--bl|--buffer-length]
-		if (!strcmp(*arg_ptr, "--bl") || !strcmp(*arg_ptr, "--buffer-length")) {
-			if (configs.buffer_length_set)
-				fatal_error("invalid use: buffer length already set", 1);
-
-			--argc, ++arg_ptr;
-			int buffer_length = strtol(*arg_ptr, &error_str, 10);
-			if (*error_str || buffer_length < 1 || buffer_length > UINT_MAX)
-				fatal_error("invalid buffer length", 1);
-
-			configs.buffer_length = buffer_length;
-			configs.buffer_length_set = 1;
-		}
-		// Line width: [--lw|--line-width]
-		else if (!strcmp(*arg_ptr, "--lw") || !strcmp(*arg_ptr, "--line-width")) {
-			if (configs.line_width_set)
-				fatal_error("invalid use: line width already set", 1);
-
-			--argc, ++arg_ptr;
-			int line_width = strtol(*arg_ptr, &error_str, 10);
-			if (*error_str || line_width < 1 || line_width > UINT_MAX)
-				fatal_error("invalid line width", 1);
-
-			configs.line_width = line_width;
-			configs.line_width_set = 1;
-		}
-		// Input stream: [--is|--input-stream]
-		else if (!strcmp(*arg_ptr, "--is") || !strcmp(*arg_ptr, "--input-stream")) {
-			if (configs.input_stream_set)
-				fatal_error("invalid use: input stream already set", 1);
-
-			--argc, ++arg_ptr;
-			configs.input_stream = fopen(*arg_ptr, "r");
-			if (!configs.input_stream)
-				fatal_error("memory error", 1);
-
-			configs.input_stream_set = 1;
-		}
-		// Output stream: Argument provided without a selector
-		else {
-			if (configs.output_stream_set)
-				fatal_error("invalid use: output stream already set", 1);
-
-			configs.output_stream = fopen(*arg_ptr, "r+");
-			if (configs.output_stream) {
-				printf("Editing file: %s\n", *arg_ptr);
-			}
-			else {
-				printf("Creating file: %s\n", *arg_ptr);
-				configs.output_stream = fopen(*arg_ptr, "w+");
-			}
-
-			configs.output_stream_set = 1;
-		}
-	}
-
-	free(error_str);
-	return 0;
-}
-
 // buffer_setup: Setup buffer members and allocate line memory
 void buffer_setup(void)
 {
@@ -336,12 +335,6 @@ void string_reverse(char *s)
 	}
 }
 
-// decimal_remove_last_digit: Remove the last digit of a decimal by return
-int decimal_remove_last_digit(int num)
-{
-	return num / 10;
-}
-
 // decimal_reverse: Reverse a decimal by return
 int decimal_reverse(int num)
 {
@@ -353,9 +346,15 @@ int decimal_reverse(int num)
 	return rev;
 }
 
+// decimal_remove_last_digit: Remove the last digit of a decimal by return
+int decimal_remove_last_digit(int num)
+{
+	return num / 10;
+}
+
 // fatal_error: Print error message and exit program with an error code
 void fatal_error(char *str, int code)
 {
-	fprintf(stderr, "%s: %s\n", prog_name, str);
+	fprintf(stderr, "%s: %s\n", program_name, str);
 	exit(code);
 }
