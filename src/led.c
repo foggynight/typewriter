@@ -161,7 +161,6 @@ enum modes cmd_process(void)
 
 			if (configs.output_stream != stdout) {
 				fclose(configs.output_stream);
-				free(configs.output_stream);
 			}
 			configs.output_stream = fopen(file_name, "r+");
 
@@ -181,28 +180,18 @@ enum modes cmd_process(void)
 			}
 		} break;
 		case 'r': {
-			if (cmd_line == buffer.current_line) {
-				if (buffer.current_line <= buffer.last_line) {
+			if (cmd_line <= buffer.last_line) {
+				while (cmd_count--) {
 					printf("%zu: %s",
-						buffer.current_line,
+						cmd_line,
 						*(buffer.line_ptr + buffer.current_line - 1)
 					);
-					++buffer.current_line;
-				}
-				else {
-					printf("EOF\n");
+					++cmd_line;
+					buffer.current_line = cmd_line;
 				}
 			}
 			else {
-				if (cmd_line <= buffer.last_line) {
-					printf("%zu: %s",
-						cmd_line,
-						*(buffer.line_ptr + cmd_line - 1)
-					);
-				}
-				else {
-					printf("EOF\n");
-				}
+				printf("EOF\n");
 			}
 		} break;
 		case 's': {
@@ -226,10 +215,14 @@ enum modes cmd_process(void)
 
 		} break;
 		case 'w': {
-
+			printf("Writing to file\n");
+			for (size_t i = 0; i < buffer.last_line; ++i) {
+				fprintf(configs.output_stream, "%s", *(buffer.line_ptr + i));
+			}
 		} break;
 		case 'q': {
-
+			printf("Exiting program\n");
+			return EXIT;
 		} break;
 		default: {
 			fprintf(stderr, "Invalid command\n");
@@ -337,6 +330,8 @@ void buffer_load(void)
 		++count
 	);
 	buffer.last_line = count;
+
+	fseek(configs.output_stream, 0, SEEK_SET);
 }
 
 // buffer_clean: Free buffer memory
@@ -346,6 +341,10 @@ void buffer_clean(void)
 		free(*(buffer.line_ptr+i));
 	}
 	free(buffer.line_ptr);
+
+	if (configs.output_stream != stdout) {
+		fclose(configs.output_stream);
+	}
 }
 
 // string_reverse: Reverse a string in-place
