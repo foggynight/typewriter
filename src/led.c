@@ -171,7 +171,13 @@ int cmd_process(void)
 			file_load(file_name);
 		} break;
 		case 'v': {
-
+			for (
+				struct Line *line_ptr = buffer.first_line;
+				line_ptr;
+				line_ptr = line_ptr->next
+			) {
+				printf("%d: %s", line_ptr->number, line_ptr->text);
+			}
 		} break;
 		case 'r': {
 
