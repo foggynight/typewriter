@@ -1,3 +1,3 @@
 # led
 
-Line editor.
+Line EDitor.
