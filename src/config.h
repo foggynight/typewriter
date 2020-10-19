@@ -9,8 +9,8 @@ typedef unsigned int uint;
 typedef struct config {
 	char *program_name;        // Program name
 	FILE *input_stream;        // Program input stream
-	uint input_stream_set : 1; // Has input stream been set
 	FILE *output_stream;       // Program output stream
+	uint input_stream_set : 1; // Has input stream been set
 	char *output_stream_name;  // Name of the output stream file
 } Config;
 

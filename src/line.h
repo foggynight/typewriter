@@ -1,3 +1,6 @@
+#ifndef LINE_H
+#define LINE_H
+
 typedef unsigned int uint;
 
 // Line: A line of text
@@ -7,3 +10,5 @@ typedef struct line {
 	struct line *prev; // Previous line
 	struct line *next; // Next line
 } Line;
+
+#endif
