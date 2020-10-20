@@ -11,7 +11,6 @@ static void string_reverse(char *str);
 static int decimal_reverse(int num);
 static int decimal_remove_last_digit(int num);
 
-// cmd_process: Read, process and execute a command, true implies exit
 int cmd_process(Command *cmd, Buffer *buffer, Config *config)
 {
 	static char cmd_input[CMDWIDTH+1]; // Storage for command input
@@ -55,7 +54,7 @@ int cmd_process(Command *cmd, Buffer *buffer, Config *config)
 
 		} break;
 		case 'l': {
-
+			printf("%d\n", buffer->line_ptr->number);
 		} break;
 		case 's': {
 
@@ -98,10 +97,9 @@ static void string_reverse(char *s)
 // decimal_reverse: Reverse a decimal by return
 static int decimal_reverse(int num)
 {
-	int rev = 0;
-	while (num) {
+	int rev;
+	for (rev = 0; num; num /= 10) {
 		rev = rev*10 + num%10;
-		num /= 10;
 	}
 	return rev;
 }

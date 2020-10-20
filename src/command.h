@@ -13,6 +13,7 @@ typedef struct command {
 	uint count; // Repeat count times
 } Command;
 
+// cmd_process: Read, process and execute a command, true on failure
 int cmd_process(Command *cmd, Buffer *buffer, Config *config);
 
 #endif
