@@ -6,24 +6,23 @@
 #include "error.h"
 #include "line.h"
 
-// buffer_load: Load a file into the buffer
 void buffer_load(Buffer *buffer, Config *config)
 {
-	if (config->output_stream != stdout) {
+	if (config->output_stream_name) {
 		buffer_clean(buffer, config);
+		config->output_stream = fopen(config->output_stream_name, "r+");
+		if (config->output_stream) {
+			printf("Editing file: %s\n", config->output_stream_name);
+		}
+		else {
+			if ((config->output_stream = fopen(config->output_stream_name, "w+")))
+				printf("Creating file: %s\n", config->output_stream_name);
+			else
+				fatal_error("Memory error", 1);
+		}
 	}
 
-	config->output_stream = fopen(config->output_stream_name, "r+");
-	if (config->output_stream) {
-		printf("Editing file: %s\n", config->output_stream_name);
-	}
-	else {
-		printf("Creating file: %s\n", config->output_stream_name);
-		if (!(config->output_stream = fopen(config->output_stream_name, "w+")))
-			fatal_error("memory error", 1);
-	}
-
-	Line *line = malloc(sizeof(Line));
+	Line *line = calloc(1, sizeof(Line));
 	Line *prev_line = NULL;
 	buffer->first_line = line;
 
@@ -35,8 +34,8 @@ void buffer_load(Buffer *buffer, Config *config)
 		line->number = count + 1;
 
 		if (prev_line) {
-			line->prev = prev_line;
 			prev_line->next = line;
+			line->prev = prev_line;
 		}
 		else {
 			line->prev = NULL;
@@ -52,23 +51,22 @@ void buffer_load(Buffer *buffer, Config *config)
 		buffer->line_ptr = buffer->first_line;
 	}
 	else {
-		buffer->first_line = buffer->last_line = buffer->line_ptr = NULL;
+		line->number = 1;
+		buffer->line_ptr = buffer->first_line = buffer->last_line = line;
 	}
 }
 
-// buffer_clean: Free buffer memory
 void buffer_clean(Buffer *buffer, Config *config)
 {
 	for (
-		Line *line = buffer->first_line, *next = NULL;
-		line;
-		line = next
+		Line *current = buffer->first_line, *next = NULL;
+		current;
+		current = next
 	) {
-		next = line->next;
-		free(line);
+		next = current->next;
+		free(current);
 	}
 
-	if (config->output_stream != stdout) {
+	if (config->output_stream != stdout)
 		fclose(config->output_stream);
-	}
 }

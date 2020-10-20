@@ -11,7 +11,10 @@ typedef struct buffer {
 	Line *line_ptr;   // Pointer to current line
 } Buffer;
 
+// buffer_load: Open an output stream and load it into the line buffer
 void buffer_load(Buffer *buffer, Config *config);
+
+// buffer_clean: Free line buffer memory and close the output stream
 void buffer_clean(Buffer *buffer, Config *config);
 
 #endif

@@ -9,11 +9,9 @@ int main(int argc, char **argv)
 	Command cmd = {0};
 
 	args_process(&config, argc, argv);
-	if (config.output_stream_name)
-		buffer_load(&buffer, &config);
+	buffer_load(&buffer, &config);
 
-	for (int exit = 0; !exit; )
-		exit = cmd_process(&cmd, &buffer, &config);
+	while (!cmd_process(&cmd, &buffer, &config));
 
 	buffer_clean(&buffer, &config);
 	return 0;
