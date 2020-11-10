@@ -50,6 +50,7 @@ void buffer_load(Buffer *buffer, Config *config)
         prev_line->next = NULL;
         buffer->last_line = prev_line;
         buffer->line_ptr = buffer->first_line;
+        free(line);
     }
     else {
         line->number = 1;
