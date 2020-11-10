@@ -18,26 +18,28 @@ int cmd_process(Command *cmd, Buffer *buffer, Config *config)
         return 1;
     }
 
-    // Get and remove the number prefix of cmd to get cmd_line, assigning the
-    // leftover string to cmd_temp.
-    char *cmd_temp;
-    cmd->line = strtol(cmd_input, &cmd_temp, 10);
-    if (!cmd->line) {
-        if (buffer->line_ptr)
-            cmd->line = buffer->line_ptr->number;
-        else
-            cmd->line = 1;
-    }
+    {
+        // Get and remove the number prefix of cmd to get cmd_line, assigning the
+        // leftover string to cmd_temp.
+        char *cmd_temp;
+        cmd->line = strtol(cmd_input, &cmd_temp, 10);
+        if (!cmd->line) {
+            if (buffer->line_ptr)
+                cmd->line = buffer->line_ptr->number;
+            else
+                cmd->line = 1;
+        }
 
-    // Get and remove the number suffix of cmd_temp to get cmd_count, assigning
-    // the leftover string to cmd_id.
-    strcat(cmd_temp, "1");
-    string_reverse(cmd_temp);
-    cmd->count = strtol(cmd_temp, &cmd->id, 10);
-    cmd->count = decimal_reverse(cmd->count);
-    cmd->count = decimal_remove_last_digit(cmd->count);
-    if (!cmd->count)
-        cmd->count = 1;
+        // Get and remove the number suffix of cmd_temp to get cmd_count, assigning
+        // the leftover string to cmd_id.
+        strcat(cmd_temp, "1");
+        string_reverse(cmd_temp);
+        cmd->count = strtol(cmd_temp, &cmd->id, 10);
+        cmd->count = decimal_reverse(cmd->count);
+        cmd->count = decimal_remove_last_digit(cmd->count);
+        if (!cmd->count)
+            cmd->count = 1;
+    }
 
     if (strlen(cmd->id) != 1) {
         fprintf(stderr, "Invalid command\n");
