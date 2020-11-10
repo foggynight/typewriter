@@ -27,7 +27,7 @@ void buffer_load(Buffer *buffer, Config *config)
     buffer->first_line = line;
 
     for (
-        size_t count = 0, length;
+        size_t count = 0, length = 0;
         getline(&line->text, &length, config->output_stream) != EOF;
         ++count
     ) {
@@ -42,7 +42,8 @@ void buffer_load(Buffer *buffer, Config *config)
         }
 
         prev_line = line;
-        line = malloc(sizeof(Line));
+        line = calloc(1, sizeof(Line));
+        length = 0;
     }
 
     if (prev_line) {
@@ -52,7 +53,7 @@ void buffer_load(Buffer *buffer, Config *config)
     }
     else {
         line->number = 1;
-        buffer->line_ptr = buffer->first_line = buffer->last_line = line;
+        buffer->line_ptr = buffer->last_line = line;
     }
 }
 
