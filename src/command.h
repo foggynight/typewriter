@@ -8,9 +8,9 @@ typedef unsigned int uint;
 
 // Command: User command storage
 typedef struct command {
-	uint line;  // Target line number
-	char *id;   // Command ID
-	uint count; // Repeat count times
+    uint line;  // Target line number
+    char *id;   // Command ID
+    uint count; // Repeat count times
 } Command;
 
 // cmd_process: Read, process and execute a command, true on failure

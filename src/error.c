@@ -5,6 +5,6 @@
 
 void fatal_error(char *str, int code)
 {
-	fprintf(stderr, "led: %s\n", str);
-	exit(code);
+    fprintf(stderr, "led: %s\n", str);
+    exit(code);
 }
