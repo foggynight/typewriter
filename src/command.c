@@ -14,6 +14,9 @@ static int decimal_remove_last_digit(int num);
 int cmd_process(Command *cmd, Buffer *buffer, Config *config)
 {
     static char cmd_input[CMDWIDTH+1]; // Storage for command input
+
+    // No need to print an error message, EOF will typically imply the user is
+    // exiting the program.
     if (fscanf(config->input_stream, "%s", cmd_input) == EOF) {
         return 1;
     }
@@ -42,49 +45,51 @@ int cmd_process(Command *cmd, Buffer *buffer, Config *config)
     }
 
     if (strlen(cmd->id) != 1) {
-        fprintf(stderr, "Invalid command\n");
+        printf("Invalid command\n");
+        return 0;
     }
-    else {
-        switch (*cmd->id) {
-        case 'f': {
 
-        } break;
-        case 'v': {
+    switch (*cmd->id) {
+    case 'f': {
 
-        } break;
-        case 'r': {
-            Line *ptr = buffer->line_ptr;
-            for (int i = 0; ptr && i < cmd->count; ++i) {
-                printf("%s", ptr->text);
-                ptr = ptr->next;
-            }
-        } break;
-        case 'l': {
-            printf("%d\n", buffer->line_ptr->number);
-        } break;
-        case 's': {
-
-        } break;
-        case 'i': {
-
-        } break;
-        case 'a': {
-
-        } break;
-        case 'c': {
-
-        } break;
-        case 'w': {
-
-        } break;
-        case 'q': {
-            printf("Exiting program\n");
-            return 1;
-        } break;
-        default: {
-            fprintf(stderr, "Invalid command\n");
-        } break;
+    } break;
+    case 'v': {
+        for (Line *ptr = buffer->first_line; ptr; ptr = ptr->next) {
+            printf("%s", ptr->text);
         }
+    } break;
+    case 'r': {
+        Line *ptr = buffer->line_ptr;
+        for (int i = 0; ptr && i < cmd->count; ++i) {
+            printf("%s", ptr->text);
+            ptr = ptr->next;
+        }
+    } break;
+    case 'l': {
+        printf("%d\n", buffer->line_ptr->number);
+    } break;
+    case 's': {
+
+    } break;
+    case 'i': {
+
+    } break;
+    case 'a': {
+
+    } break;
+    case 'c': {
+
+    } break;
+    case 'w': {
+
+    } break;
+    case 'q': {
+        printf("Exiting program\n");
+        return 1;
+    } break;
+    default: {
+        printf("Invalid command\n");
+    } break;
     }
 
     return 0;
