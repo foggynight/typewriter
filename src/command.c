@@ -51,7 +51,11 @@ int cmd_process(Command *cmd, Buffer *buffer, Config *config)
 
         } break;
         case 'r': {
-
+            Line *ptr = buffer->line_ptr;
+            for (int i = 0; ptr && i < cmd->count; ++i) {
+                printf("%s", ptr->text);
+                ptr = ptr->next;
+            }
         } break;
         case 'l': {
             printf("%d\n", buffer->line_ptr->number);
