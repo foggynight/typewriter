@@ -69,7 +69,21 @@ int cmd_process(Command *cmd, Buffer *buffer, Config *config)
         printf("%d\n", buffer->line_ptr->number);
     } break;
     case 's': {
+        if (cmd->line < 1) {
+            cmd->line = 1;
+        }
+        else if (cmd->line > buffer->last_line->number) {
+            cmd->line = buffer->last_line->number;
+        }
 
+        while (cmd->line < buffer->line_ptr->number) {
+            buffer->line_ptr = buffer->line_ptr->prev;
+        }
+        while (cmd->line > buffer->line_ptr->number) {
+            buffer->line_ptr = buffer->line_ptr->next;
+        }
+
+        printf("%d\n", buffer->line_ptr->number);
     } break;
     case 'i': {
 
