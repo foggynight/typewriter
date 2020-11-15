@@ -11,9 +11,21 @@
 
 #define CMDLEN 32
 
+/* Command input utility functions */
 static void string_reverse(char *str);
 static int decimal_reverse(int num);
 static int decimal_remove_last_digit(int num);
+
+/* Command implementations */
+static void file(Buffer *buffer, Config *config);
+static void view(Buffer *buffer);
+static void read(Command *cmd, Buffer *buffer);
+static void line(Buffer *buffer);
+static void setline(Command *cmd, Buffer *buffer, Config *config);
+static void insert(void);
+static void append(void);
+static void change(void);
+static void write(void);
 
 int cmd_process(Command *cmd, Buffer *buffer, Config *config)
 {
@@ -54,69 +66,38 @@ int cmd_process(Command *cmd, Buffer *buffer, Config *config)
     }
 
     switch (*cmd->id) {
-    case 'f': {
-        char filename[MAXFILENAMESTR];
-
-        printf("Filename: ");
-        if (fscanf(config->input_stream, " %" str(MAXFILENAMELEN) "s", filename) == EOF)
-            fatal_error("Error: Read input failure", 1);
-
-        if (config->output_stream_name)
-            free(config->output_stream_name);
-        config->output_stream_name = strdup(filename);
-
-        buffer_load(buffer, config);
-    } break;
-    case 'v': {
-        for (Line *ptr = buffer->first_line; ptr; ptr = ptr->next)
-            printf("%s", ptr->text);
-    } break;
-    case 'r': {
-        Line *ptr = buffer->line_ptr;
-        for (int i = 0; ptr && i < cmd->count; ++i) {
-            printf("%s", ptr->text);
-            ptr = ptr->next;
-        }
-    } break;
-    case 'l': {
-        printf("%d\n", buffer->line_ptr->number);
-    } break;
-    case 's': {
-        if (cmd->line < 1) {
-            cmd->line = 1;
-        }
-        else if (cmd->line > buffer->last_line->number) {
-            cmd->line = buffer->last_line->number;
-        }
-
-        while (cmd->line < buffer->line_ptr->number) {
-            buffer->line_ptr = buffer->line_ptr->prev;
-        }
-        while (cmd->line > buffer->line_ptr->number) {
-            buffer->line_ptr = buffer->line_ptr->next;
-        }
-
-        printf("%d\n", buffer->line_ptr->number);
-    } break;
-    case 'i': {
-
-    } break;
-    case 'a': {
-
-    } break;
-    case 'c': {
-
-    } break;
-    case 'w': {
-
-    } break;
-    case 'q': {
-        printf("Exiting program\n");
+    case 'f':
+        file(buffer, config);
+    break;
+    case 'v':
+        view(buffer);
+    break;
+    case 'r':
+        read(cmd, buffer);
+    break;
+    case 'l':
+        line(buffer);
+    break;
+    case 's':
+        setline(cmd, buffer, config);
+    break;
+    case 'i':
+        insert();
+    break;
+    case 'a':
+        append();
+    break;
+    case 'c':
+        change();
+    break;
+    case 'w':
+        write();
+    break;
+    case 'q':
+        printf("Exiting led\n");
         return 1;
-    } break;
-    default: {
+    default:
         printf("Invalid command\n");
-    } break;
     }
 
     return 0;
@@ -147,3 +128,57 @@ static int decimal_remove_last_digit(int num)
 {
     return num / 10;
 }
+
+static void file(Buffer *buffer, Config *config) {
+    char filename[MAXFILENAMESTR];
+
+    printf("Filename: ");
+    if (fscanf(config->input_stream, " %" str(MAXFILENAMELEN) "s", filename) == EOF)
+        fatal_error("Error: Read input failure", 1);
+
+    if (config->output_stream_name)
+        free(config->output_stream_name);
+    config->output_stream_name = strdup(filename);
+
+    buffer_load(buffer, config);
+}
+
+static void view(Buffer *buffer) {
+    for (Line *ptr = buffer->first_line; ptr; ptr = ptr->next)
+        printf("%s", ptr->text);
+}
+
+static void read(Command *cmd, Buffer *buffer) {
+    Line *ptr = buffer->line_ptr;
+    for (int i = 0; ptr && i < cmd->count; ++i) {
+        printf("%s", ptr->text);
+        ptr = ptr->next;
+    }
+}
+
+static void line(Buffer *buffer) {
+    printf("%d\n", buffer->line_ptr->number);
+}
+
+static void setline(Command *cmd, Buffer *buffer, Config *config) {
+    if (cmd->line < 1) {
+        cmd->line = 1;
+    }
+    else if (cmd->line > buffer->last_line->number) {
+        cmd->line = buffer->last_line->number;
+    }
+
+    while (cmd->line < buffer->line_ptr->number) {
+        buffer->line_ptr = buffer->line_ptr->prev;
+    }
+    while (cmd->line > buffer->line_ptr->number) {
+        buffer->line_ptr = buffer->line_ptr->next;
+    }
+
+    printf("%d\n", buffer->line_ptr->number);
+}
+
+static void insert(void) {}
+static void append(void) {}
+static void change(void) {}
+static void write(void) {}
