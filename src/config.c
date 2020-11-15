@@ -16,7 +16,7 @@ void args_process(Config *config, int argc, char **argv)
             config->input_stream = fopen(*arg_ptr, "r");
 
             if (!config->input_stream)
-                fatal_error("Memory error", 1);
+                fatal_error("Error: Cannot open input file", 1);
             else
                 config->input_stream_set = 1;
         }

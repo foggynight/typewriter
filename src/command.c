@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "error.h"
 #include "buffer.h"
 #include "command.h"
 #include "config.h"
@@ -51,12 +52,20 @@ int cmd_process(Command *cmd, Buffer *buffer, Config *config)
 
     switch (*cmd->id) {
     case 'f': {
+        char filename[MAXFILENAMESTR];
+        printf("Filename: ");
+        if (fscanf(config->input_stream, "%s", filename) == EOF)
+            fatal_error("Error: Read input failure", 1);
 
+        if (config->output_stream_name)
+            free(config->output_stream_name);
+        config->output_stream_name = strdup(filename);
+
+        buffer_load(buffer, config);
     } break;
     case 'v': {
-        for (Line *ptr = buffer->first_line; ptr; ptr = ptr->next) {
+        for (Line *ptr = buffer->first_line; ptr; ptr = ptr->next)
             printf("%s", ptr->text);
-        }
     } break;
     case 'r': {
         Line *ptr = buffer->line_ptr;

@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 
+#define MAXFILENAMELEN 4095               // Max length of filename
+#define MAXFILENAMESTR (MAXFILENAMELEN+1) // Max filename string length
+
 typedef unsigned int uint;
 
 // Config: Program configuration
