@@ -26,6 +26,9 @@ void args_process(Config *config, int argc, char **argv)
                 fatal_error("Invalid use: Output stream already set", 1);
             else
                 config->output_stream_name = *arg_ptr;
+
+            if (strlen(config->output_stream_name) > MAXFILENAMELEN)
+                fatal_error("Error: Filename too long", 1);
         }
     }
 }

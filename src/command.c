@@ -6,7 +6,10 @@
 #include "command.h"
 #include "config.h"
 
-#define CMDWIDTH 32
+#define stringify(x) #x
+#define str(x) stringify(x)
+
+#define CMDLEN 32
 
 static void string_reverse(char *str);
 static int decimal_reverse(int num);
@@ -14,11 +17,11 @@ static int decimal_remove_last_digit(int num);
 
 int cmd_process(Command *cmd, Buffer *buffer, Config *config)
 {
-    static char cmd_input[CMDWIDTH+1]; // Storage for command input
+    static char cmd_input[CMDLEN+1]; // Storage for command input
 
     // No need to print an error message, EOF will typically imply the user is
     // exiting the program.
-    if (fscanf(config->input_stream, "%s", cmd_input) == EOF) {
+    if (fscanf(config->input_stream, " %" str(CMDLEN) "s", cmd_input) == EOF) {
         return 1;
     }
 
@@ -53,8 +56,9 @@ int cmd_process(Command *cmd, Buffer *buffer, Config *config)
     switch (*cmd->id) {
     case 'f': {
         char filename[MAXFILENAMESTR];
+
         printf("Filename: ");
-        if (fscanf(config->input_stream, "%s", filename) == EOF)
+        if (fscanf(config->input_stream, " %" str(MAXFILENAMELEN) "s", filename) == EOF)
             fatal_error("Error: Read input failure", 1);
 
         if (config->output_stream_name)
