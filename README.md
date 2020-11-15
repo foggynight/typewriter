@@ -2,13 +2,21 @@
 
 Line EDitor.
 
+## Installation
+
+```
+git clone https://github.com/foggynight/led
+cd led
+make
+```
+
 ## Usage
 
 ### Commands
 
 **Format:** [LINE]COMMAND[COUNT]
 
-- LINE: Target line
+- LINE: Target line number
 - COMMAND: Command to execute
 - COUNT: Number of times to execute
 
