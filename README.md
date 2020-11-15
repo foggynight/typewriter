@@ -14,11 +14,11 @@ make
 
 ### Commands
 
-**Format:** [LINE]COMMAND[COUNT]
+**Format:** `[LINE]COMMAND[COUNT]`
 
-- LINE: Target line number
-- COMMAND: Command to execute
-- COUNT: Number of times to execute
+- `LINE`: Target line number
+- `COMMAND`: Command to execute
+- `COUNT`: Number of times to execute
 
 By default, a command is executed 1 time on the current line.
 
