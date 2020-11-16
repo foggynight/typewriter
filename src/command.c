@@ -29,16 +29,23 @@ static int decimal_reverse(int num);
 static int decimal_remove_last_digit(int num);
 static int cmd_execute(Command *cmd, Buffer *buffer, Config *config);
 
-/* Command implementations */
+/* File operation commands */
 static void file(Buffer *buffer, Config *config);
-static void view(Buffer *buffer);
+static void write(Buffer *buffer, Config *config);
+
+/* Read buffer commands */
 static void read(Command *cmd, Buffer *buffer);
+static void view(Buffer *buffer);
+
+/* Cursor commands */
 static void line(Buffer *buffer);
 static void setline(Command *cmd, Buffer *buffer, Config *config);
-static void insert(void);
-static void append(void);
-static void change(void);
-static void write(void);
+
+/* Buffer manipulation commands */
+static Line *get_text(Command *cmd, Buffer *buffer, Config *config);
+static void append(Command *cmd, Buffer *buffer, Config *config);
+static void change(Command *cmd, Buffer *buffer, Config *config);
+static void insert(Command *cmd, Buffer *buffer, Config *config);
 
 int cmd_process(Command *cmd, Buffer *buffer, Config *config)
 {
@@ -96,16 +103,16 @@ static int cmd_execute(Command *cmd, Buffer *buffer, Config *config) {
         setline(cmd, buffer, config);
     break;
     case 'i':
-        insert();
+        insert(cmd, buffer, config);
     break;
     case 'a':
-        append();
+        append(cmd, buffer, config);
     break;
     case 'c':
-        change();
+        change(cmd, buffer, config);
     break;
     case 'w':
-        write();
+        write(buffer, config);
     break;
     case 'q':
         printf("Exiting led...\n");
@@ -117,7 +124,14 @@ static int cmd_execute(Command *cmd, Buffer *buffer, Config *config) {
     return 0;
 }
 
-// string_reverse: Reverse a string in-place
+/* --- Command utility functions --- */
+
+/**
+ * Reverse a string in-place.
+ *
+ * @params
+ * - s {char*}: String to reverse
+ */
 static void string_reverse(char *s)
 {
     for (char *e = s+strlen(s)-1; s < e; ++s, --e) {
@@ -127,7 +141,14 @@ static void string_reverse(char *s)
     }
 }
 
-// decimal_reverse: Reverse a decimal by return
+/**
+ * Reverse a decimal integer by return.
+ *
+ * @params
+ * - num {int}: Decimal integer to reverse
+ *
+ * @return {int}: The reversed decimal integer
+ */
 static int decimal_reverse(int num)
 {
     int rev;
@@ -136,11 +157,20 @@ static int decimal_reverse(int num)
     return rev;
 }
 
-// decimal_remove_last_digit: Remove the last digit of a decimal by return
+/**
+ * Remove the last digit of a decimal by return.
+ *
+ * @params
+ * - num {int}: Number to dismember
+ *
+ * @return {int}: Dismembered number
+ */
 static int decimal_remove_last_digit(int num)
 {
     return num / 10;
 }
+
+/* --- File operation commands --- */
 
 static void file(Buffer *buffer, Config *config) {
     char filename[MAXFILENAMESTR];
@@ -156,10 +186,9 @@ static void file(Buffer *buffer, Config *config) {
     buffer_load(buffer, config);
 }
 
-static void view(Buffer *buffer) {
-    for (Line *ptr = buffer->first_line; ptr; ptr = ptr->next)
-        printf("%s", ptr->text);
-}
+static void write(Buffer *buffer, Config *config) {}
+
+/* --- Read buffer commands --- */
 
 static void read(Command *cmd, Buffer *buffer) {
     Line *ptr = buffer->line_ptr;
@@ -168,6 +197,13 @@ static void read(Command *cmd, Buffer *buffer) {
         ptr = ptr->next;
     }
 }
+
+static void view(Buffer *buffer) {
+    for (Line *ptr = buffer->first_line; ptr; ptr = ptr->next)
+        printf("%s", ptr->text);
+}
+
+/* --- Cursor commands --- */
 
 static void line(Buffer *buffer) {
     printf("%d\n", buffer->line_ptr->number);
@@ -187,7 +223,9 @@ static void setline(Command *cmd, Buffer *buffer, Config *config) {
     printf("%d\n", buffer->line_ptr->number);
 }
 
-static void insert(void) {}
-static void append(void) {}
-static void change(void) {}
-static void write(void) {}
+/* --- Buffer manipulation commands --- */
+
+static Line *get_text(Command *cmd, Buffer *buffer, Config *config) {}
+static void append(Command *cmd, Buffer *buffer, Config *config) {}
+static void change(Command *cmd, Buffer *buffer, Config *config) {}
+static void insert(Command *cmd, Buffer *buffer, Config *config) {}
