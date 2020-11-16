@@ -4,7 +4,7 @@ A Line EDitor inspired by ed.
 
 ## Installation
 
-```
+```bash
 git clone https://github.com/foggynight/led
 cd led
 make
