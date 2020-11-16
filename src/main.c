@@ -1,3 +1,9 @@
+/**
+ * --- led ---
+ *
+ * A Line EDitor inspired by ed.
+ */
+
 #include "buffer.h"
 #include "command.h"
 #include "config.h"

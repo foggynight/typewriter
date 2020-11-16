@@ -6,10 +6,22 @@
 #include "command.h"
 #include "config.h"
 
+/**
+ * Convert x to a string constant.
+ *
+ * @params
+ * - x {symbol}: Symbols to convert to a string constant
+ *
+ * @return {const char *}: String constant of x
+ *
+ * @example
+ * const char *str = str(symbols to convert)
+ * str -> "symbols to convert"
+ */
 #define stringify(x) #x
 #define str(x) stringify(x)
 
-#define CMDLEN 32
+#define CMDLEN 32 // Max length of command input
 
 /* Command utility functions */
 static void string_reverse(char *str);
@@ -96,7 +108,7 @@ static int cmd_execute(Command *cmd, Buffer *buffer, Config *config) {
         write();
     break;
     case 'q':
-        printf("Exiting led\n");
+        printf("Exiting led...\n");
         return 1;
     default:
         printf("Invalid command\n");

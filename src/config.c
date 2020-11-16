@@ -7,7 +7,7 @@
 void args_process(Config *config, int argc, char **argv)
 {
     for (char **arg_ptr = argv+1; argc > 1; --argc, ++arg_ptr) {
-        // Input stream: [--is|--input-stream] FILENAME
+        // Input stream: <--is|--input-stream> FILENAME
         if (!strcmp(*arg_ptr, "--is") || !strcmp(*arg_ptr, "--input-stream")) {
             if (config->input_stream_set)
                 fatal_error("Invalid use: Input stream already set", 1);
