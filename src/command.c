@@ -17,6 +17,10 @@
  * @example
  * const char *str = str(symbols to convert)
  * str -> "symbols to convert"
+ *
+ * @example
+ * #define MAX 32
+ * "%" str(MAX) "s" -> "%32s"
  */
 #define stringify(x) #x
 #define str(x) stringify(x)
