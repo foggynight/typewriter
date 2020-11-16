@@ -93,40 +93,20 @@ int cmd_process(Command *cmd, Buffer *buffer, Config *config)
 
 static int cmd_execute(Command *cmd, Buffer *buffer, Config *config) {
     switch (*cmd->id) {
-    case 'f':
-        file(buffer, config);
-    break;
-    case 'v':
-        view(buffer);
-    break;
-    case 'r':
-        read(cmd, buffer);
-    break;
-    case 'l':
-        line(buffer);
-    break;
-    case 's':
-        setline(cmd, buffer, config);
-    break;
-    case 'i':
-        insert(cmd, buffer, config);
-    break;
-    case 'a':
-        append(cmd, buffer, config);
-    break;
-    case 'c':
-        change(cmd, buffer, config);
-    break;
-    case 'w':
-        write(buffer, config);
-    break;
-    case 'q':
-        quit();
-        return 1;
-    default:
-        puts("Invalid command");
+        case 'f': file(buffer, config); break;
+        case 'v': view(buffer); break;
+        case 'r': read(cmd, buffer); break;
+        case 'l': line(buffer); break;
+        case 's': setline(cmd, buffer, config); break;
+        case 'i': insert(cmd, buffer, config); break;
+        case 'a': append(cmd, buffer, config); break;
+        case 'c': change(cmd, buffer, config); break;
+        case 'w': write(buffer, config); break;
+        case 'q':
+            quit();
+            return 1;
+        default: puts("Invalid command"); break;
     }
-
     return 0;
 }
 
