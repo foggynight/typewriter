@@ -1,6 +1,6 @@
 # led
 
-Line EDitor.
+A Line EDitor inspired by ed.
 
 ## Installation
 
