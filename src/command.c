@@ -37,6 +37,7 @@ static int cmd_execute(Command *cmd, Buffer *buffer, Config *config);
 /* File operation commands */
 static void file(Buffer *buffer, Config *config);
 static void write(Buffer *buffer, Config *config);
+static void quit(void);
 
 /* Read buffer commands */
 static void read(Command *cmd, Buffer *buffer);
@@ -83,7 +84,7 @@ int cmd_process(Command *cmd, Buffer *buffer, Config *config)
     if (!cmd->count) cmd->count = 1;
 
     if (strlen(cmd->id) != 1) {
-        printf("Invalid command\n");
+        puts("Invalid command");
         return 0;
     }
 
@@ -120,10 +121,10 @@ static int cmd_execute(Command *cmd, Buffer *buffer, Config *config) {
         write(buffer, config);
     break;
     case 'q':
-        printf("Exiting led...\n");
+        quit();
         return 1;
     default:
-        printf("Invalid command\n");
+        puts("Invalid command");
     }
 
     return 0;
@@ -152,7 +153,7 @@ static void string_reverse(char *s)
  * @params
  * - num {int}: Decimal integer to reverse
  *
- * @return {int}: The reversed decimal integer
+ * @return {int}: Reversed decimal integer
  */
 static int decimal_reverse(int num)
 {
@@ -191,7 +192,25 @@ static void file(Buffer *buffer, Config *config) {
     buffer_load(buffer, config);
 }
 
-static void write(Buffer *buffer, Config *config) {}
+static void write(Buffer *buffer, Config *config)
+{
+    config->output_stream = fopen(config->output_stream_name, "w");
+    if (!config->output_stream)
+        fatal_error("Error: Write output failure", 1);
+
+    for (Line *ptr = buffer->first_line; ptr; ptr = ptr->next)
+        fprintf(config->output_stream, "%s", ptr->text);
+    fclose(config->output_stream);
+
+    config->output_stream = fopen(config->output_stream_name, "r+");
+    if (!config->output_stream)
+        fatal_error("Error: Write output failure", 1);
+}
+
+static void quit(void)
+{
+    puts("Exiting led...");
+}
 
 /* --- Read buffer commands --- */
 
