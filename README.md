@@ -1,6 +1,6 @@
 # led
 
-A Line EDitor inspired by ed.
+Line EDitor inspired by ed.
 
 ## Installation
 
@@ -32,16 +32,16 @@ between executions.
 
 ### Command List
 
-- f - file: Open or create a file
-- v - view: Print the whole line buffer
-- r - read: Print the current line
-- l - line: Print the current line number
-- s - setline: Set the current line
-- i - insert: Insert text before the current line
-- a - append: Append text after the current line
-- c - change: Replace text at the given line
-- w - write: Write line buffer to the current file
-- q - exit: Exit the program
+- `f` - file: Open or create a file
+- `v` - view: Print the whole line buffer
+- `r` - read: Print the current line
+- `l` - line: Print the current line number
+- `s` - setline: Set the current line
+- `i` - insert: Insert text before the current line
+- `a` - append: Append text after the current line
+- `c` - change: Replace text at the given line
+- `w` - write: Write line buffer to the current file
+- `q` - exit: Exit the program
 
 ## License
 

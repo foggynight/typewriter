@@ -3,7 +3,7 @@
 /**
  * --- led ---
  *
- * A Line EDitor inspired by ed.
+ * Line EDitor inspired by ed.
  */
 
 #include "buffer.h"
