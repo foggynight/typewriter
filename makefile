@@ -2,7 +2,7 @@
 # Copyright (C) 2020 Robert Coffey
 
 CC=clang
-CFLAGS=-Wall -Wpedantic -g
+CFLAGS=-Wall -Wextra -Wpedantic -g
 
 SRCS=$(wildcard src/*.c)
 OBJS=$(SRCS:%.c=%.o)

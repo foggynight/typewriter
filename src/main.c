@@ -6,13 +6,15 @@
  * Line EDitor inspired by ed.
  */
 
+#include <stdio.h>
+
 #include "buffer.h"
 #include "command.h"
 #include "config.h"
 
 int main(int argc, char **argv)
 {
-    Config config = {*argv, stdin, stdout};
+    Config config = {*argv, stdin, stdout, 0, NULL};
     Buffer buffer = {0};
     Command cmd = {0};
 

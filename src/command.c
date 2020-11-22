@@ -31,6 +31,8 @@
 
 #define CMDLEN 32 // Max length of command input
 
+typedef unsigned int uint;
+
 /* Command utility functions */
 static void string_reverse(char *str);
 static int decimal_reverse(int num);
@@ -48,7 +50,7 @@ static void view(Buffer *buffer);
 
 /* Cursor commands */
 static void line(Buffer *buffer);
-static void setline(Command *cmd, Buffer *buffer, Config *config);
+static void setline(Command *cmd, Buffer *buffer);
 
 /* Buffer manipulation commands */
 static Line *get_text(Command *cmd, Buffer *buffer, Config *config);
@@ -100,7 +102,7 @@ static int cmd_execute(Command *cmd, Buffer *buffer, Config *config) {
         case 'v': view(buffer); break;
         case 'r': read(cmd, buffer); break;
         case 'l': line(buffer); break;
-        case 's': setline(cmd, buffer, config); break;
+        case 's': setline(cmd, buffer); break;
         case 'i': insert(cmd, buffer, config); break;
         case 'a': append(cmd, buffer, config); break;
         case 'c': change(cmd, buffer, config); break;
@@ -199,7 +201,7 @@ static void quit(void)
 
 static void read(Command *cmd, Buffer *buffer) {
     Line *ptr = buffer->line_ptr;
-    for (int i = 0; ptr && i < cmd->count; ++i) {
+    for (uint i = 0; ptr && i < cmd->count; ++i) {
         printf("%s", ptr->text);
         ptr = ptr->next;
     }
@@ -216,7 +218,7 @@ static void line(Buffer *buffer) {
     printf("%d\n", buffer->line_ptr->number);
 }
 
-static void setline(Command *cmd, Buffer *buffer, Config *config) {
+static void setline(Command *cmd, Buffer *buffer) {
     if (cmd->line < 1)
         cmd->line = 1;
     else if (cmd->line > buffer->last_line->number)
