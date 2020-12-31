@@ -43,6 +43,10 @@ between executions.
 - `w` - write: Write line buffer to the current file
 - `q` - exit: Exit the program
 
+## Dependencies
+
+- GNU C Compiler
+
 ## License
 
 Copyright (C) 2020 Robert Coffey
