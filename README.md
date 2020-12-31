@@ -45,7 +45,7 @@ between executions.
 
 ## Dependencies
 
-- GNU C Compiler
+- GNU C compiler
 
 ## License
 
