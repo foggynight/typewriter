@@ -1,6 +1,6 @@
 # led
 
-Line EDitor inspired by ed.
+Line EDitor inspired by ed
 
 ## Installation
 
@@ -45,7 +45,8 @@ between executions.
 
 ## Dependencies
 
-- GNU C compiler
+- GCC
+- Make
 
 ## License
 
