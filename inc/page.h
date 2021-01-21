@@ -9,9 +9,11 @@
 #include <stdio.h>
 
 typedef struct page {
+    char *path;
     FILE *file;
 } page_t;
 
 page_t *page_init(void);
+int page_fopen(page_t *page, char *path);
 
 #endif // PAGE_H_
