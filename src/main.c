@@ -16,12 +16,8 @@ int main(int argc, char **argv)
         return 1;
     }
     else if (argc > 1) {
-        if (!page_fopen(page, argv[1], "r")) {
-            page_fopen(page, argv[1], "w");
-        }
-        if (!page->file) {
-            rtb_logf("led: unable to create file %s", argv[1]);
-            return 1;
+        if (page_fopen(page, argv[1], "r")) {
+            // load file content into text buffer
         }
     }
 
