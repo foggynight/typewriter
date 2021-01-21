@@ -5,11 +5,16 @@
  **/
 
 #include "page.h"
+#include "rtb/log.h"
 
-int main(void)
+int main(int argc, char **argv)
 {
     page_t *page = page_init();
-    // load file if necessary
+
+    if (argc > 2)
+        rtb_log("led: Invalid use: Too many arguments");
+    else if (argc > 1)
+        page_fopen(page, argv[1]);
 
     // update loop
 
