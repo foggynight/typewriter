@@ -4,9 +4,11 @@
  * Released under the GPLv2 license
  **/
 
+#include "page.h"
+
 int main(void)
 {
-    // initialize page
+    page_t *page = page_init();
     // load file if necessary
 
     // update loop

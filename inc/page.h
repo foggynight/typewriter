@@ -12,4 +12,6 @@ typedef struct page {
     FILE *file;
 } page_t;
 
+page_t *page_init(void);
+
 #endif // PAGE_H_
