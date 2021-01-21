@@ -27,6 +27,11 @@ int page_fopen(page_t *page, const char *path, const char *mode)
     if (!path)
         rtb_elog("page_fopen: path argument is NULL");
 
+    if (page->path)
+        free(page->path);
+    if (page->file)
+        fclose(page->file);
+
     page->path = strdup(path);
     page->file = fopen(path, mode);
 
