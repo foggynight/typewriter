@@ -15,6 +15,6 @@ typedef struct page {
 } page_t;
 
 page_t *page_init(void);
-int page_fopen(page_t *page, char *path);
+int page_fopen(page_t *page, const char *path, const char *mode);
 
 #endif // PAGE_H_

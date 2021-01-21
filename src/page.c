@@ -20,7 +20,7 @@ page_t *page_init(void)
     return new_page;
 }
 
-int page_fopen(page_t *page, char *path)
+int page_fopen(page_t *page, const char *path, const char *mode)
 {
     if (!page)
         rtb_elog("page_fopen: page argument is NULL");
@@ -28,7 +28,7 @@ int page_fopen(page_t *page, char *path)
         rtb_elog("page_fopen: path argument is NULL");
 
     page->path = strdup(path);
-    page->file = fopen(path, "r");
+    page->file = fopen(path, mode);
 
     return page->file ? 1 : 0;
 }
