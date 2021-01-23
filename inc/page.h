@@ -12,9 +12,11 @@
 typedef struct page {
     char *path;
     FILE *file;
+    int length;
+    char **lines;
 } page_t;
 
 page_t *page_init(void);
-int page_fopen(page_t *page, const char *path, const char *mode);
+int page_load(page_t *page, const char *path);
 
 #endif // PAGE_H_
