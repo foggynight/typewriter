@@ -28,7 +28,7 @@ page_t *page_init(void)
         rtb_elog("page_init: calloc failed");
 
     for (int i = 0; i < MAX_LINE_COUNT; ++i) {
-        new_page->lines[i] = calloc(MAX_LINE_LENGTH, 1);
+        new_page->lines[i] = calloc(1, MAX_LINE_LENGTH+1);
         if (!new_page->lines[i])
             rtb_elog("page_init: calloc failed");
     }
