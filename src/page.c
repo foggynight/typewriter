@@ -63,7 +63,7 @@ static int page_fopen(page_t *page, const char *path, const char *mode)
         rtb_elog("page_fopen: page argument is NULL");
     if (!path)
         rtb_elog("page_fopen: path argument is NULL");
-    if (!path)
+    if (!mode)
         rtb_elog("page_fopen: mode argument is NULL");
 
     if (page->path)
