@@ -15,6 +15,15 @@
 #define MAX_LINE_COUNT  64
 #define MAX_LINE_LENGTH 256
 
+/**
+ * page_fopen: Open a file and save its path
+ *
+ * @param page Target page to represent file
+ * @param path Path to the file to open
+ * @param mode Mode to open file in
+ *
+ * @return Non-zero on success
+ **/
 static int page_fopen(page_t *page, const char *path, const char *mode);
 
 page_t *page_init(void)
