@@ -5,7 +5,6 @@
  **/
 
 #include <signal.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "page.h"
@@ -29,7 +28,8 @@ int main(int argc, char **argv)
 
     screen_init();
 
-    while (1);
+    while (1)
+        screen_step(page);
 }
 
 static void finish(int signal)

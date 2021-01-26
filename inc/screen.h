@@ -7,7 +7,10 @@
 #ifndef SCREEN_H_
 #define SCREEN_H_
 
+#include "page.h"
+
 void screen_init(void);
+void screen_step(page_t *page);
 void screen_kill(void);
 
 #endif // SCREEN_H_
