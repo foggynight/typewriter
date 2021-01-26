@@ -35,5 +35,5 @@ int main(int argc, char **argv)
 static void finish(int signal)
 {
     screen_kill();
-    exit(signal);
+    exit(0);
 }
