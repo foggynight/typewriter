@@ -18,13 +18,10 @@ int main(int argc, char **argv)
     signal(SIGINT, finish);
     page_t *page = page_init();
 
-    if (argc > 2) {
-        rtb_log("led: too many arguments");
-        return 1;
-    }
-    else if (argc > 1) {
+    if (argc > 2)
+        rtb_elog("led: too many arguments");
+    else if (argc > 1)
         page_load(page, argv[1]);
-    }
 
     screen_init();
 
