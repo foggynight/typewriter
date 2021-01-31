@@ -1,4 +1,14 @@
-# led: Design Document
+# led: Vision Document
+
+## Introduction
+
+## Problem Statement
+
+## Stakeholders and Interests
+
+## Users and User Goals
+
+## System Features
 
 - Typewriter inspired text editor
 - Pages representing text files
