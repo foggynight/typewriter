@@ -17,8 +17,8 @@ void screen_init(void)
     initscr();
     cbreak();
     noecho();
-    intrflush(stdscr, FALSE);
     keypad(stdscr, TRUE);
+    intrflush(stdscr, FALSE);
 }
 
 void screen_step(page_t *page)
