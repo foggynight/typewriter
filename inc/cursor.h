@@ -13,6 +13,6 @@ typedef struct cursor {
 } cursor_t;
 
 cursor_t *cursor_init(void);
-void cursor_destroy(cursor_t *target);
+cursor_t *cursor_destroy(cursor_t *target);
 
 #endif // CURSOR_H_

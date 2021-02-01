@@ -18,10 +18,12 @@ cursor_t *cursor_init(void)
     return new_cursor;
 }
 
-void cursor_destroy(cursor_t *target)
+cursor_t *cursor_destroy(cursor_t *target)
 {
     if (!target)
         rtb_elog("cursor_destroy: target is NULL");
 
     free(target);
+
+    return NULL;
 }
