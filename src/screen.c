@@ -11,7 +11,7 @@
 #include "rtb/log.h"
 #include "screen.h"
 
-void screen_init(void)
+void screen_setup(void)
 {
     setlocale(LC_ALL, "");
     initscr();

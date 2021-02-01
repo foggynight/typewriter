@@ -9,7 +9,7 @@
 
 #include "page.h"
 
-void screen_init(void);
+void screen_setup(void);
 void screen_step(page_t *page);
 void screen_kill(void);
 

@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     else if (argc > 1)
         page_load(page, argv[1]);
 
-    screen_init();
+    screen_setup();
 
     while (1)
         screen_step(page);
