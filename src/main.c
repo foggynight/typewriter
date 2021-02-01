@@ -16,6 +16,8 @@ static void finish(int signal);
 int main(int argc, char **argv)
 {
     signal(SIGINT, finish);
+
+    cursor_t *cursor = cursor_init();
     page_t *page = page_init();
 
     if (argc > 2)
