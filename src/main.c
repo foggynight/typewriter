@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     screen_setup();
 
     while (1)
-        screen_step(page);
+        screen_draw(cursor, page);
 }
 
 static void finish(int signal)
