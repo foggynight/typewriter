@@ -17,7 +17,7 @@ public:
 public:
     void init();
     void kill();
-    void draw(Page page);
+    void draw(Page& page);
 };
 
 #endif // SCREEN_HPP_

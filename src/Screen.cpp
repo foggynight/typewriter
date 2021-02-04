@@ -6,6 +6,7 @@
 
 #include "Screen.hpp"
 
+#include <cstdlib>
 #include <ncurses.h>
 
 #include "Page.hpp"
@@ -28,9 +29,10 @@ void Screen::init()
 void Screen::kill()
 {
     endwin();
+    exit(0);
 }
 
-void Screen::draw(Page page)
+void Screen::draw(Page& page)
 {
     for (int i=0; i<height; ++i)
         mvaddstr(i, 0, page.lines[i].c_str());
