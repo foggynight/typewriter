@@ -9,7 +9,8 @@
 
 #include "Page.hpp"
 
-class Screen {
+class Screen
+{
 public:
     size_t width, height;
 

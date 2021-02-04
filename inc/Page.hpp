@@ -12,7 +12,8 @@
 #include <vector>
 
 /* Page type representing a file */
-class Page {
+class Page
+{
 public:
     std::vector<std::string> lines;
 

@@ -16,11 +16,13 @@ int main(int argc, char **argv)
 {
     Page page;
 
-    if (argc > 2) {
+    if (argc > 2)
+    {
         std::cout << "led: too many arguments" << std::endl;
         return 1;
     }
-    else if (argc > 1) {
+    else if (argc > 1)
+    {
         page.load(argv[1]);
     }
 
