@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-/* Page type representing a file. */
+/* Page type representing a file */
 class Page {
 public:
     std::vector<std::string> lines;
