@@ -1,25 +1,25 @@
 # Copyright (C) 2021 Robert Coffey
 # Released under the GPLv2 license
 
-CC=gcc
-CFLAGS=-Wall -Wextra -Wpedantic
-INCS=-I./inc/ -I./dep/rtb/inc/
+CC=g++
+FLAGS=-Wall -Wextra -Wpedantic
+INCS=-I./inc/
 LIBS=-lncurses
 
-HEDS=$(wildcard inc/*.h)
-SRCS=$(wildcard src/*.c)
-OBJS=$(SRCS:%.c=%.o)
+HEDS=$(wildcard inc/*.hpp)
+SRCS=$(wildcard src/*.cpp)
+OBJS=$(SRCS:%.cpp=%.o)
 PROG=led
 
 all: $(PROG)
-	$(CC) $(CFLAGS) $(INCS) $(OBJS) -o $(PROG) $(LIBS)
+	$(CC) $(FLAGS) $(INCS) $(OBJS) -o $(PROG) $(LIBS)
 
 $(PROG): $(OBJS)
 $(OBJS): $(HEDS)
 $(OBJS): $(SRCS)
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(INCS) $< -c -o $@ $(LIBS)
+%.o: %.cpp
+	$(CC) $(FLAGS) $(INCS) $< -c -o $@ $(LIBS)
 
 .PHONY: clean
 clean:
