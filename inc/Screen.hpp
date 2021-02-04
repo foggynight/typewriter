@@ -11,8 +11,7 @@
 
 class Screen {
 public:
-    int width;
-    int height;
+    size_t width, height;
 
 public:
     void init();

@@ -34,7 +34,7 @@ void Screen::kill()
 
 void Screen::draw(Page& page)
 {
-    for (int i=0; i<height; ++i)
+    for (size_t i=0; i<height && i<page.lines.size(); ++i)
         mvaddstr(i, 0, page.lines[i].c_str());
     refresh();
 }
