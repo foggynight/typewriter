@@ -1,3 +1,0 @@
-[submodule "dep/rtb"]
-	path = dep/rtb
-	url = https://github.com/foggynight/rtb
