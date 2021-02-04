@@ -12,10 +12,12 @@
 #include <vector>
 
 class Page {
+public:
+    std::vector<std::string> lines;
+
 private:
     std::string path;
     std::fstream file;
-    std::vector<std::string> lines;
 
 public:
     void load(std::string path);
