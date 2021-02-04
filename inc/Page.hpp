@@ -18,7 +18,6 @@ private:
     std::vector<std::string> lines;
 
 public:
-    Page();
     bool load(std::string path);
 };
 
