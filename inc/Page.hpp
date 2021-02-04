@@ -18,7 +18,7 @@ private:
     std::vector<std::string> lines;
 
 public:
-    bool load(std::string path);
+    void load(std::string path);
 };
 
 #endif // PAGE_HPP_
