@@ -10,11 +10,15 @@
 #include "Page.hpp"
 #include "Screen.hpp"
 
+static void finish(int signal);
+
 Screen screen;
 
 int main(int argc, char **argv)
 {
     Page page;
+
+    signal(SIGINT, finish);
 
     if (argc > 2)
     {
