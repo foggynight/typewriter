@@ -16,6 +16,7 @@ void Page::load(std::string path)
     this->path = path;
     file.open(path);
 
-    for (std::string line; std::getline(file, line); )
-        lines.push_back(std::string(line));
+    for (std::string line;
+         std::getline(file, line);
+         lines.push_back(std::string(line)));
 }
