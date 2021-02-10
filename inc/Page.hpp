@@ -25,9 +25,10 @@ private:
     std::fstream file;
 
 public:
-    void load(std::string path);
-    void newline();
-    void write(int src);
+    void file_read(std::string path);
+
+    void add_newline();
+    void add_char(int src);
 };
 
 #endif // PAGE_HPP_

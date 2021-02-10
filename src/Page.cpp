@@ -8,7 +8,7 @@
 
 #include <string>
 
-void Page::load(std::string path)
+void Page::file_read(std::string path)
 {
     // TODO: Handle invalid filepaths
     // TODO: Check if file exists
@@ -21,7 +21,7 @@ void Page::load(std::string path)
          lines.emplace_back(line));
 }
 
-void Page::newline()
+void Page::add_newline()
 {
     ++cursor.pos.y;
     cursor.pos.x = 0;
@@ -30,7 +30,7 @@ void Page::newline()
         lines.emplace_back();
 }
 
-void Page::write(int src)
+void Page::add_char(int src)
 {
     if (cursor.pos.x < lines[cursor.pos.y].size())
         lines[cursor.pos.y][cursor.pos.x] = src;

@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     }
     else if (argc > 1)
     {
-        page.load(argv[1]);
+        page.file_read(argv[1]);
     }
 
     nc::init();
@@ -37,9 +37,9 @@ int main(int argc, char **argv)
          nc::draw(page))
     {
         if (input == '\n')
-            page.newline();
+            page.add_newline();
         else if (isprint(input))
-            page.write(input);
+            page.add_char(input);
     }
 }
 
