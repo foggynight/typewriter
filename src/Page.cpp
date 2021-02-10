@@ -20,3 +20,9 @@ void Page::load(std::string path)
          std::getline(file, line);
          lines.push_back(std::string(line)));
 }
+
+void Page::write(int src)
+{
+    lines[cursor.pos.y][cursor.pos.x] = src;
+    ++cursor.pos.x;
+}

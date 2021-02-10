@@ -26,6 +26,7 @@ private:
 
 public:
     void load(std::string path);
+    void write(int src);
 };
 
 #endif // PAGE_HPP_
