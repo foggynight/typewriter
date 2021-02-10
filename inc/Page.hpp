@@ -11,10 +11,13 @@
 #include <string>
 #include <vector>
 
+#include "Cursor.hpp"
+
 /* Page type representing a file */
 class Page
 {
 public:
+    Cursor cursor;
     std::vector<std::string> lines;
 
 private:

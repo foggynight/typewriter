@@ -5,8 +5,3 @@
  **/
 
 #include "Cursor.hpp"
-
-Cursor::Cursor(int x_pos, int y_pos)
-{
-    pos = {x_pos, y_pos};
-}

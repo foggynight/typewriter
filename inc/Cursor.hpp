@@ -13,9 +13,6 @@ class Cursor
 {
 public:
     std::array<int, 2> pos;
-
-public:
-    Cursor(int x_pos, int y_pos);
 };
 
 #endif // CURSOR_HPP_
