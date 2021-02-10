@@ -30,16 +30,26 @@ void nc::kill()
     exit(0);
 }
 
-bool nc::input(int *dest)
-{
-    *dest = getch();
-    return *dest != ERR;
-}
-
 void nc::draw(Page& page)
 {
     for (size_t i=0; i<page.lines.size(); ++i)
         mvaddstr(i, 0, page.lines[i].c_str());
     move(page.cursor.pos.y, page.cursor.pos.x);
     refresh();
+}
+
+bool nc::input(int *dest)
+{
+    *dest = getch();
+    return *dest != ERR;
+}
+
+void nc::update(Page& page, int input)
+{
+    if (input == KEY_F(2))
+        page.file_write();
+    else if (input == '\n')
+        page.add_newline();
+    else if (isprint(input))
+        page.add_char(input);
 }

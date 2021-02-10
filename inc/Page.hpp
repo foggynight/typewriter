@@ -26,6 +26,7 @@ private:
 
 public:
     void file_read(std::string path);
+    void file_write();
 
     void add_newline();
     void add_char(int src);

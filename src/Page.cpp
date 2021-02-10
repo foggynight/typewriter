@@ -19,6 +19,18 @@ void Page::file_read(std::string path)
     for (std::string line;
          std::getline(file, line);
          lines.emplace_back(line));
+
+    file.close();
+}
+
+void Page::file_write()
+{
+    file.open(path);
+
+    for (auto line : lines)
+        file << line << '\n';
+
+    file.close();
 }
 
 void Page::add_newline()

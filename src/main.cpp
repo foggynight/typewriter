@@ -36,10 +36,7 @@ int main(int argc, char **argv)
          nc::input(&input);
          nc::draw(page))
     {
-        if (input == '\n')
-            page.add_newline();
-        else if (isprint(input))
-            page.add_char(input);
+        nc::update(page, input);
     }
 }
 

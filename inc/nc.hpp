@@ -18,8 +18,9 @@ namespace nc
 
 void init();
 void kill();
-bool input(int *dest);
 void draw(Page& page);
+bool input(int *dest);
+void update(Page& page, int input);
 
 }
 
