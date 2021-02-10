@@ -13,8 +13,8 @@ class Cursor
 {
 public:
     struct {
-        int x;
-        int y;
+        size_t x;
+        size_t y;
     } pos;
 };
 

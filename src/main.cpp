@@ -36,10 +36,10 @@ int main(int argc, char **argv)
          nc::input(&input);
          nc::draw(page))
     {
-        if (isalpha(input) || isdigit(input))
-        {
+        if (input == '\n')
+            page.newline();
+        else if (isprint(input))
             page.write(input);
-        }
     }
 }
 

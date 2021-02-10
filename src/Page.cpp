@@ -21,8 +21,18 @@ void Page::load(std::string path)
          lines.push_back(std::string(line)));
 }
 
+void Page::newline()
+{
+    ++cursor.pos.y;
+    cursor.pos.x = 0;
+}
+
 void Page::write(int src)
 {
-    lines[cursor.pos.y][cursor.pos.x] = src;
+    if (cursor.pos.x < lines[cursor.pos.y].size())
+        lines[cursor.pos.y][cursor.pos.x] = src;
+    else
+        lines[cursor.pos.y] += src;
+
     ++cursor.pos.x;
 }

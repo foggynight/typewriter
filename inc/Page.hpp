@@ -26,6 +26,7 @@ private:
 
 public:
     void load(std::string path);
+    void newline();
     void write(int src);
 };
 
