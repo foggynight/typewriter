@@ -8,11 +8,9 @@
 #include <iostream>
 
 #include "Page.hpp"
-#include "Screen.hpp"
+#include "nc.hpp"
 
 static void finish(int signal);
-
-Screen screen;
 
 int main(int argc, char **argv)
 {
@@ -30,12 +28,12 @@ int main(int argc, char **argv)
         page.load(argv[1]);
     }
 
-    screen.init();
+    nc::init();
     while (true)
-        screen.draw(page);
+        nc::draw(page);
 }
 
 static void finish(int signal)
 {
-    screen.kill();
+    nc::kill();
 }

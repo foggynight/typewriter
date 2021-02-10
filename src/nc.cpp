@@ -1,17 +1,17 @@
 /**
- * led - Screen.cpp
+ * led - nc.cpp
  * Copyright (C) 2021 Robert Coffey
  * Released under the GPLv2 license
  **/
 
-#include "Screen.hpp"
+#include "nc.hpp"
 
 #include <cstdlib>
 #include <ncurses.h>
 
 #include "Page.hpp"
 
-void Screen::init()
+void nc::init()
 {
     // TODO: resizable window
 
@@ -22,19 +22,17 @@ void Screen::init()
 
     keypad(stdscr, TRUE);
     intrflush(stdscr, FALSE);
-
-    getmaxyx(stdscr, height, width);
 }
 
-void Screen::kill()
+void nc::kill()
 {
     endwin();
     exit(0);
 }
 
-void Screen::draw(Page& page)
+void nc::draw(Page& page)
 {
-    for (size_t i=0; i<height && i<page.lines.size(); ++i)
+    for (size_t i=0; i<page.lines.size(); ++i)
         mvaddstr(i, 0, page.lines[i].c_str());
     refresh();
 }
