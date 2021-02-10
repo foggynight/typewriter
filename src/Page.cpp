@@ -18,7 +18,7 @@ void Page::load(std::string path)
 
     for (std::string line;
          std::getline(file, line);
-         lines.push_back(std::string(line)));
+         lines.emplace_back(line));
 }
 
 void Page::newline()
@@ -27,7 +27,7 @@ void Page::newline()
     cursor.pos.x = 0;
 
     if (cursor.pos.y == lines.size())
-        lines.emplace_back(std::string());
+        lines.emplace_back();
 }
 
 void Page::write(int src)
