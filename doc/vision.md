@@ -2,14 +2,13 @@
 
 ## Introduction
 
-**led** aims to simulate the experience of using a typewriter, from within a
-computer terminal.
+Typewriter inspired text editor
 
-## History
+This project was started with a line editor similar to UNIX ed in mind, but
+has changed direction.
 
-This project was started with a line editor similar to **ed** in mind, but has
-changed direction. I want a typewriter for functional use, but am finding them
-hard to find; so I'm writing a program to replace a physical typewriter.
+I want a typewriter for functional use, but I can't find one. I'm going to
+write a program to simulate using one instead.
 
 ## System Features
 
@@ -18,9 +17,3 @@ hard to find; so I'm writing a program to replace a physical typewriter.
 - Cursor centered horizontally near the bottom of the screen
 - Sliding view while typing to simulate a moving page
 - Auto formatting features such as those for a letter
-
-## Challenges
-
-## Stakeholders and Interests
-
-## Users and User Goals
