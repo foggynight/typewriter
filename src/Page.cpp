@@ -20,6 +20,9 @@ void Page::file_read(std::string path)
          std::getline(file, line);
          lines.emplace_back(line));
 
+    if (lines.size() == 0)
+        lines.emplace_back();
+
     file.close();
 }
 
