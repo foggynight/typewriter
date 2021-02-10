@@ -30,6 +30,12 @@ void nc::kill()
     exit(0);
 }
 
+bool nc::input(int *dest)
+{
+    *dest = getch();
+    return *dest != ERR;
+}
+
 void nc::draw(Page& page)
 {
     for (size_t i=0; i<page.lines.size(); ++i)

@@ -18,6 +18,7 @@ namespace nc
 
 void init();
 void kill();
+bool input(int *dest);
 void draw(Page& page);
 
 }

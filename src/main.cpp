@@ -29,8 +29,14 @@ int main(int argc, char **argv)
     }
 
     nc::init();
-    while (true)
-        nc::draw(page);
+    for (int input;
+         nc::input(&input);
+         nc::draw(page))
+    {
+        // handle input
+        // update cursor
+        // update page
+    }
 }
 
 static void finish(int signal)
