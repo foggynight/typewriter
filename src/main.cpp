@@ -36,14 +36,10 @@ int main(int argc, char **argv)
          nc::input(&input);
          nc::draw(page))
     {
-        // handle input
         if (isalpha(input) || isdigit(input))
         {
             page.write(input);
         }
-
-        // update cursor
-        // update page
     }
 }
 
