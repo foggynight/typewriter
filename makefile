@@ -32,3 +32,8 @@ clean:
 .PHONY: remove
 remove:
 	rm -f $(OBJS) $(PROG)
+
+.PHONY: uninstall
+uninstall:
+	rm -f $(OBJS) $(PROG)
+	rm -i ~/.local/bin/$(PROG)
