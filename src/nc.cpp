@@ -40,5 +40,6 @@ void nc::draw(Page& page)
 {
     for (size_t i=0; i<page.lines.size(); ++i)
         mvaddstr(i, 0, page.lines[i].c_str());
+    move(page.cursor.pos.y, page.cursor.pos.x);
     refresh();
 }

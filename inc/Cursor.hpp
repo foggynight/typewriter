@@ -12,7 +12,10 @@
 class Cursor
 {
 public:
-    std::array<int, 2> pos;
+    struct {
+        int x;
+        int y;
+    } pos;
 };
 
 #endif // CURSOR_HPP_
