@@ -29,6 +29,8 @@ int main(int argc, char **argv)
     }
 
     nc::init();
+    nc::draw(page);
+
     for (int input;
          nc::input(&input);
          nc::draw(page))
