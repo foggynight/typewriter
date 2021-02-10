@@ -6,6 +6,7 @@
 
 #include "Page.hpp"
 
+#include <fstream>
 #include <string>
 
 void Page::file_read(std::string path)
@@ -14,7 +15,7 @@ void Page::file_read(std::string path)
     // TODO: Check if file exists
 
     this->path = path;
-    file.open(path);
+    file.open(path, std::fstream::in);
 
     for (std::string line;
          std::getline(file, line);
@@ -28,7 +29,7 @@ void Page::file_read(std::string path)
 
 void Page::file_write()
 {
-    file.open(path);
+    file.open(path, std::fstream::out);
 
     for (auto line : lines)
         file << line << '\n';
