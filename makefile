@@ -21,6 +21,10 @@ $(OBJS): $(SRCS)
 %.o: %.cpp
 	$(CC) $(FLAGS) $(INCS) $< -c -o $@ $(LIBS)
 
+.PHONY: install
+install:
+	cp -i $(PROG) ~/.local/bin
+
 .PHONY: clean
 clean:
 	rm -f $(OBJS)
