@@ -15,9 +15,11 @@
 /* Functions that call to ncurses */
 namespace nc
 {
-    void init();
-    void kill();
-    void draw(Page& page);
+
+void init();
+void kill();
+void draw(Page& page);
+
 }
 
 #endif // NC_HPP_
