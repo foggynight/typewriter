@@ -25,6 +25,9 @@ void Page::newline()
 {
     ++cursor.pos.y;
     cursor.pos.x = 0;
+
+    if (cursor.pos.y == lines.size())
+        lines.emplace_back(std::string());
 }
 
 void Page::write(int src)
