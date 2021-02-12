@@ -46,19 +46,24 @@ bool nc::input(int *dest)
 
 void nc::update(Page& page, int input)
 {
-    if (isprint(input))
-        page.add_char(input);
+    if (isprint(input))       // Place the input character on the page at the
+        page.add_char(input); // cursor pos and move the cursor to the right
     else {
         switch (input) {
-        case '\n':
-            page.add_newline();
-            break;
-        case KEY_BACKSPACE:
-            page.move_cursor(-1, 0);
-            break;
-        case KEY_F(2):
-            page.file_write();
-            break;
+            // Move the cursor to the start of the next line
+            case '\n': page.add_newline(); break;
+
+            // Move the cursor to the left
+            case KEY_BACKSPACE: page.move_cursor(-1, 0); break;
+
+            // Save the current page to its associated file
+            case KEY_F(2): page.file_write(); break;
+
+            // Arrow keys - Move the cursor
+            case KEY_UP: page.move_cursor(0, -1); break;
+            case KEY_DOWN: page.move_cursor(0, 1); break;
+            case KEY_LEFT: page.move_cursor(-1, 0); break;
+            case KEY_RIGHT: page.move_cursor(1, 0); break;
         }
     }
 }
