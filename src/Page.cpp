@@ -41,17 +41,22 @@ void Page::add_newline()
 {
     ++cursor.pos.y;
     cursor.pos.x = 0;
-
-    if (cursor.pos.y == lines.size())
-        lines.emplace_back();
 }
 
 void Page::add_char(int src)
 {
-    if (cursor.pos.x < lines[cursor.pos.y].size())
+    while (cursor.pos.y >= lines.size())
+        lines.emplace_back();
+
+    size_t line_size = lines[cursor.pos.y].size();
+    if (cursor.pos.x < line_size)
         lines[cursor.pos.y][cursor.pos.x] = src;
-    else
+    else {
+        int i = cursor.pos.x - line_size;
+        while (i--)
+            lines[cursor.pos.y] += ' ';
         lines[cursor.pos.y] += src;
+    }
 
     ++cursor.pos.x;
 }
