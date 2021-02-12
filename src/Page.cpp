@@ -55,3 +55,22 @@ void Page::add_char(int src)
 
     ++cursor.pos.x;
 }
+
+void Page::move_cursor(int x, int y)
+{
+    if (x < 0) {
+        if (cursor.pos.x >= (size_t)-x)
+            cursor.pos.x += x;
+    }
+    else {
+        cursor.pos.x += x;
+    }
+
+    if (y < 0) {
+        if (cursor.pos.y >= (size_t)-y)
+            cursor.pos.y += y;
+    }
+    else {
+        cursor.pos.y += y;
+    }
+}

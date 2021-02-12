@@ -30,6 +30,8 @@ public:
 
     void add_newline();
     void add_char(int src);
+
+    void move_cursor(int x, int y);
 };
 
 #endif // PAGE_HPP_

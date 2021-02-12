@@ -46,10 +46,12 @@ bool nc::input(int *dest)
 
 void nc::update(Page& page, int input)
 {
-    if (input == KEY_F(2))
-        page.file_write();
+    if (isprint(input))
+        page.add_char(input);
     else if (input == '\n')
         page.add_newline();
-    else if (isprint(input))
-        page.add_char(input);
+    else if (input == KEY_BACKSPACE)
+        page.move_cursor(-1, 0);
+    else if (input == KEY_F(2))
+        page.file_write();
 }
