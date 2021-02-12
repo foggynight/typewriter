@@ -48,10 +48,17 @@ void nc::update(Page& page, int input)
 {
     if (isprint(input))
         page.add_char(input);
-    else if (input == '\n')
-        page.add_newline();
-    else if (input == KEY_BACKSPACE)
-        page.move_cursor(-1, 0);
-    else if (input == KEY_F(2))
-        page.file_write();
+    else {
+        switch (input) {
+        case '\n':
+            page.add_newline();
+            break;
+        case KEY_BACKSPACE:
+            page.move_cursor(-1, 0);
+            break;
+        case KEY_F(2):
+            page.file_write();
+            break;
+        }
+    }
 }
