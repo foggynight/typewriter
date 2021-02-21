@@ -12,10 +12,8 @@
 class Cursor
 {
 public:
-    struct {
-        size_t x;
-        size_t y;
-    } pos;
+    size_t x; // x-y position of the cursor, this position is relative
+    size_t y; // to the page containing the cursor
 };
 
 #endif // CURSOR_HPP_

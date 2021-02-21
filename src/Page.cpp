@@ -39,43 +39,43 @@ void Page::file_write()
 
 void Page::add_newline()
 {
-    ++cursor.pos.y;
-    cursor.pos.x = 0;
+    ++cursor.y;
+    cursor.x = 0;
 }
 
 void Page::add_char(int src)
 {
-    while (cursor.pos.y >= lines.size())
+    while (cursor.y >= lines.size())
         lines.emplace_back();
 
-    size_t line_size = lines[cursor.pos.y].size();
-    if (cursor.pos.x < line_size)
-        lines[cursor.pos.y][cursor.pos.x] = src;
+    size_t line_size = lines[cursor.y].size();
+    if (cursor.x < line_size)
+        lines[cursor.y][cursor.x] = src;
     else {
-        int i = cursor.pos.x - line_size;
-        while (i--) // This must be post-increment for the case: pos = size = 0
-            lines[cursor.pos.y] += ' ';
-        lines[cursor.pos.y] += src;
+        int i = cursor.x - line_size;
+        while (i--) // This must be post-increment for the case: cursor_position = line_size = 0
+            lines[cursor.y] += ' ';
+        lines[cursor.y] += src;
     }
 
-    ++cursor.pos.x;
+    ++cursor.x;
 }
 
 void Page::move_cursor(int x, int y)
 {
     if (x < 0) {
-        if (cursor.pos.x >= (size_t)-x)
-            cursor.pos.x += x;
+        if (cursor.x >= (size_t)-x)
+            cursor.x += x;
     }
     else {
-        cursor.pos.x += x;
+        cursor.x += x;
     }
 
     if (y < 0) {
-        if (cursor.pos.y >= (size_t)-y)
-            cursor.pos.y += y;
+        if (cursor.y >= (size_t)-y)
+            cursor.y += y;
     }
     else {
-        cursor.pos.y += y;
+        cursor.y += y;
     }
 }
