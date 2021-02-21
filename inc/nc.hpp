@@ -4,7 +4,7 @@
  * All functions that call to ncurses are declared in the nc namespace.
  *
  * Copyright (C) 2021 Robert Coffey
- * Released under the GPLv2 license
+ * Released under the MIT license
  **/
 
 #ifndef NC_HPP_
