@@ -20,7 +20,7 @@ int main(int argc, char **argv)
     signal(SIGINT, finish);
 
     if (argc > 2) {
-        std::cout << "Usage: led [FILENAME]" << std::endl;
+        std::cerr << "Usage: led [FILENAME]" << std::endl;
         return 1;
     }
     else if (argc > 1) {
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     }
     else {
         // TODO: Handle no filename argument
-        std::cout << "Usage: led [FILENAME]" << std::endl;
+        std::cerr << "Usage: led [FILENAME]" << std::endl;
         return 1;
     }
 
