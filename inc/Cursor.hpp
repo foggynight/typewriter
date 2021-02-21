@@ -7,8 +7,6 @@
 #ifndef CURSOR_HPP_
 #define CURSOR_HPP_
 
-#include <array>
-
 class Cursor
 {
 public:
