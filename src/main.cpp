@@ -15,7 +15,7 @@ static void finish(int signal);
 
 int main(int argc, char **argv)
 {
-    Page page;
+    Page page = {};
 
     signal(SIGINT, finish);
 
