@@ -53,7 +53,7 @@ void Page::add_char(int src)
         lines[cursor.pos.y][cursor.pos.x] = src;
     else {
         int i = cursor.pos.x - line_size;
-        while (--i)
+        while (i--) // This must be post-increment for the case: pos = size = 0
             lines[cursor.pos.y] += ' ';
         lines[cursor.pos.y] += src;
     }
