@@ -49,12 +49,14 @@ void Page::add_char(int src)
         lines.emplace_back();
 
     size_t line_size = lines[cursor.y].size();
-    if (cursor.x < line_size)
+    if (cursor.x < line_size) {
         lines[cursor.y][cursor.x] = src;
+    }
     else {
         int i = cursor.x - line_size;
-        while (i--) // This must be post-increment for the case: cursor_position = line_size = 0
+        while (i--) { // This must be post-increment for the case: cursor_position = line_size = 0
             lines[cursor.y] += ' ';
+        }
         lines[cursor.y] += src;
     }
 
