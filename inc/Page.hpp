@@ -11,7 +11,11 @@
 #include <string>
 #include <vector>
 
-#include "Cursor.hpp"
+struct Cursor
+{
+    size_t x; // x-y position of the cursor, this position is relative
+    size_t y; // to the page containing the cursor
+};
 
 /* Page type representing a file */
 class Page
