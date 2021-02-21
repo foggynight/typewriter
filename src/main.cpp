@@ -41,6 +41,8 @@ int main(int argc, char **argv)
     {
         nc::update(page, input);
     }
+
+    std::cerr << "Error: Input failure" << std::endl;
 }
 
 static void finish(int signal)
