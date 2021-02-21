@@ -63,19 +63,9 @@ void Page::add_char(int src)
 
 void Page::move_cursor(int x, int y)
 {
-    if (x < 0) {
-        if (cursor.x >= (size_t)-x)
-            cursor.x += x;
-    }
-    else {
+    if (x >= 0 || cursor.x >= (size_t)-x)
         cursor.x += x;
-    }
 
-    if (y < 0) {
-        if (cursor.y >= (size_t)-y)
-            cursor.y += y;
-    }
-    else {
+    if (y >= 0 || cursor.y >= (size_t)-y)
         cursor.y += y;
-    }
 }
