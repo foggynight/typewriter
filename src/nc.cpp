@@ -11,6 +11,8 @@
 
 #include "Page.hpp"
 
+#define TAB_WIDTH 4
+
 void nc::init()
 {
     // TODO: resizable window
@@ -53,17 +55,20 @@ void nc::update(Page& page, int input)
             // Move the cursor to the start of the next line
             case '\n': page.add_newline(); break;
 
+            // Move the cursor TAB_WIDTH to the right
+            case '\t': page.move_cursor(TAB_WIDTH - (page.cursor.x % TAB_WIDTH), 0); break;
+
             // Move the cursor to the left
             case KEY_BACKSPACE: page.move_cursor(-1, 0); break;
-
-            // Save the current page to its associated file
-            case KEY_F(2): page.file_write(); break;
 
             // Arrow keys - Move the cursor
             case KEY_UP: page.move_cursor(0, -1); break;
             case KEY_DOWN: page.move_cursor(0, 1); break;
             case KEY_LEFT: page.move_cursor(-1, 0); break;
             case KEY_RIGHT: page.move_cursor(1, 0); break;
+
+            // Save the current page to its associated file
+            case KEY_F(2): page.file_write(); break;
         }
     }
 }
