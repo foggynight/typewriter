@@ -1,5 +1,5 @@
 # Copyright (C) 2021 Robert Coffey
-# Released under the GPLv2 license
+# Released under the MIT license
 
 CC=g++
 FLAGS=-Wall -Wextra -Wpedantic
