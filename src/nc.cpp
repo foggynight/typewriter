@@ -13,6 +13,12 @@
 
 #define TAB_WIDTH 4
 
+int screen_width;
+int screen_height;
+
+int screen_center_x;
+int screen_center_y;
+
 void nc::init()
 {
     // TODO: resizable window
@@ -24,6 +30,11 @@ void nc::init()
 
     keypad(stdscr, TRUE);
     intrflush(stdscr, FALSE);
+
+    getmaxyx(stdscr, screen_height, screen_width);
+
+    screen_center_x = screen_width / 2;
+    screen_center_y = screen_height / 2;
 }
 
 void nc::kill()
@@ -34,9 +45,10 @@ void nc::kill()
 
 void nc::draw(Page& page)
 {
-    for (size_t i=0; i<page.lines.size(); ++i)
+    for (size_t i = 0; i < page.lines.size(); ++i)
         mvaddstr(i, 0, page.lines[i].c_str());
-    move(page.cursor.y, page.cursor.x);
+
+    move(screen_center_y, screen_center_x);
     refresh();
 }
 
