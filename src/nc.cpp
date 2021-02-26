@@ -45,8 +45,10 @@ void nc::kill()
 
 void nc::draw(Page& page)
 {
+    clear();
+
     for (size_t i = 0; i < page.lines.size(); ++i)
-        mvaddstr(i, 0, page.lines[i].c_str());
+        mvaddstr(i, screen_center_x - page.cursor.x, page.lines[i].c_str());
 
     move(screen_center_y, screen_center_x);
     refresh();
