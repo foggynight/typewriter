@@ -1,8 +1,5 @@
-/**
- * led - main.cpp
- * Copyright (C) 2021 Robert Coffey
- * Released under the MIT license
- **/
+// Copyright (C) 2021 Robert Coffey
+// Released under the MIT license
 
 #include <cctype>
 #include <csignal>

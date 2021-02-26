@@ -1,8 +1,5 @@
-/**
- * led - Page.cpp
- * Copyright (C) 2021 Robert Coffey
- * Released under the MIT license
- **/
+// Copyright (C) 2021 Robert Coffey
+// Released under the MIT license
 
 #include "Page.hpp"
 
@@ -11,8 +8,8 @@
 
 void Page::file_read(std::string path)
 {
-    // TODO: Handle invalid filepaths
-    // TODO: Check if file exists
+    // TODO: Handle invalid filepaths and check if file exists
+    // TODO: Expand tabs to spaces before emplacing lines
 
     this->path = path;
     file.open(path, std::fstream::in);

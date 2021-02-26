@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# debug.sh - Build and debug led
 # Copyright (C) 2021 Robert Coffey
 # Released under the MIT license
 
