@@ -10,11 +10,8 @@
 
 #define TAB_WIDTH 4
 
-int screen_width;
-int screen_height;
-
-int screen_center_x;
-int screen_center_y;
+static int screen_width, screen_height;
+static int screen_center_x, screen_center_y;
 
 void nc::init()
 {
