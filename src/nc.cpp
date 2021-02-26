@@ -56,8 +56,9 @@ bool nc::input(int *dest)
 
 void nc::update(Page& page, int input)
 {
-    if (isprint(input))       // Place the input character on the page at the
-        page.add_char(input); // cursor pos and move the cursor to the right
+    if (isprint(input)) {      // Place the input character on the page at the
+        page.add_char(input);  // cursor pos and move the cursor to the right
+    }
     else {
         switch (input) {
             // Move the cursor to the start of the next line
