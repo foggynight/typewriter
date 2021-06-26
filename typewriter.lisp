@@ -46,7 +46,11 @@
     (crt:refresh scr)))
 
 (defun write-page-to-file (text-buf name)
-  )
+  (let ((out-file (open name :direction :output
+                             :if-exists :supersede)))
+    (dolist (line text-buf)
+      (format out-file "~A~%" line))
+    (close out-file)))
 
 (defun main ()
   (let ((text-buf '()))
