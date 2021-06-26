@@ -57,6 +57,36 @@
                   (crt:move-direction scr :left *slide-size*)
                   (draw-page text-buf scr)))
 
+      (crt:bind scr :up
+                (lambda (w e)
+                  (declare (ignore w e))
+                  (crt:move-direction scr :up)
+                  (draw-page text-buf scr)))
+
+      (crt:bind scr :down
+                (lambda (w e)
+                  (declare (ignore w e))
+                  (crt:move-direction scr :down)
+                  (draw-page text-buf scr)))
+
+      (crt:bind scr :left
+                (lambda (w e)
+                  (declare (ignore w e))
+                  (crt:move-direction scr :left)
+                  (draw-page text-buf scr)))
+
+      (crt:bind scr :right
+                (lambda (w e)
+                  (declare (ignore w e))
+                  (crt:move-direction scr :right)
+                  (draw-page text-buf scr)))
+
+      (crt:bind scr #\newline
+                (lambda (w e)
+                  (declare (ignore w e))
+                  (crt:move-direction scr :down)
+                  (draw-page text-buf scr)))
+
       (crt:bind scr t
                 (lambda (w e)
                   (declare (ignore w))
