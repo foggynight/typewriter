@@ -7,37 +7,39 @@
 
 (require :croatoan)
 
-(defparameter *initial-line-size* 81)
+(defparameter *initial-line-size* 2)
 
 (defparameter *slide-size* 4)
 
-(defun add-char (text-buf char)
-  )
+(defun init-line ()
+  (make-array *initial-line-size* :adjustable t
+                                  :element-type 'character
+                                  :fill-pointer 0))
 
-(defun del-char (text-buf)
-  )
+(defun add-char (text-buf char y x)
+  (let ((line (car (nthcdr y text-buf))))
+    (if (> (length line) x)
+        (setf (aref line x) char)
+        (vector-push-extend char line)))
+  text-buf)
 
 (defun draw-page (text-buf scr)
   (crt:save-excursion scr
-    (crt:move scr 0 0)
-    (dolist (line text-buf)
-      (crt:add scr line))
-    (crt:refresh scr)))
+                      (crt:move scr 0 0)
+                      (dolist (line text-buf)
+                        (when (> (length line) 0)
+                          (crt:add scr line)
+                          (crt:move-direction scr :down)))
+                      (crt:refresh scr)))
 
 (defun write-page-to-file (text-buf name)
   )
 
 (defun main ()
-  (let ((text-buf '("This is a test.")))
+  (let ((text-buf (list (init-line))))
     (crt:with-screen (scr :input-echoing nil)
 
       (crt:bind scr #\esc 'exit-event-loop)
-
-      (crt:bind scr #\space
-                (lambda (w e)
-                  (declare (ignore w e))
-                  (crt:move-direction scr :right)
-                  (draw-page text-buf scr)))
 
       (crt:bind scr :backspace
                 (lambda (w e)
