@@ -86,13 +86,19 @@
       (crt:bind scr #\newline
                 (lambda (w e)
                   (declare (ignore w e))
-                  (crt:move-direction scr :down)
-                  (draw-page text-buf scr)))
+                  (let* ((pos (crt:cursor-position scr))
+                         (y (car pos)))
+                    (crt:move scr (1+ y) 0)
+                  (draw-page text-buf scr))))
 
       (crt:bind scr t
                 (lambda (w e)
                   (declare (ignore w))
-                  (add-char text-buf e)
+                  (let* ((pos (crt:cursor-position scr))
+                         (y (car pos))
+                         (x (cadr pos)))
+                    (setq text-buf (add-char text-buf e y x)))
+                  (crt:move-direction scr :right)
                   (draw-page text-buf scr)))
 
       (draw-page text-buf scr)
