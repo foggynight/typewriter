@@ -9,7 +9,7 @@
 
 ;;; CONFIG SECTION -------------------------------------------------------------
 
-(defparameter *initial-line-size* 2)
+(defparameter *initial-line-size* 81)
 
 (defparameter *slide-size* 4)
 
