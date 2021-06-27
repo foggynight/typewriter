@@ -1,12 +1,7 @@
-# led
+# typewriter
 
-Typewriter inspired text editor
+Typewriter inspired text editor.
 
-This project was started with a line editor similar to UNIX ed in mind,
-but has changed direction.
-
-I want a typewriter for functional use, but I can't find one. I'm going
-to write a program to simulate using one instead.
 
 ## License
 
