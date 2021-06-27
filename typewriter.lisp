@@ -68,9 +68,8 @@
   (crt:save-excursion scr
     (crt:move scr 0 0)
     (dolist (line page)
-      (when (> (length line) 0)
-        (crt:add scr line)
-        (cursor-newline scr)))
+      (crt:add scr line)
+      (cursor-newline scr))
     (crt:refresh scr)))
 
 ;;; MAIN SECTION ---------------------------------------------------------------
