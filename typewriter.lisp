@@ -12,6 +12,7 @@
 (defparameter *slide-size* 4)
 
 (defun init-line (&optional arg)
+(defun make-line (&optional arg)
   (declare (ignore arg))
   (make-array *initial-line-size* :adjustable t
                                   :element-type 'character
@@ -21,7 +22,7 @@
   (let ((text-buf-len (length text-buf)))
     (unless (> text-buf-len y)
       (let ((new-lines (make-list (1+ (- y text-buf-len)))))
-        (setq new-lines (map 'list #'init-line new-lines))
+        (setq new-lines (map 'list #'make-line new-lines))
         (setq text-buf (append text-buf new-lines)))))
   (let ((line (car (nthcdr y text-buf))))
     (if (> (length line) x)
