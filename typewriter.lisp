@@ -37,7 +37,7 @@
          (y (car pos)))
     (crt:move scr (1+ y) 0)))
 
-(defun draw-page (text-buf scr)
+(defun draw-page (scr text-buf)
   (crt:save-excursion scr
     (crt:move scr 0 0)
     (dolist (line text-buf)
@@ -61,42 +61,42 @@
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :left)
-                  (draw-page text-buf scr)))
+                  (draw-page scr text-buf)))
       (crt:bind scr #\tab
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :right *slide-size*)
-                  (draw-page text-buf scr)))
+                  (draw-page scr text-buf)))
       (crt:bind scr :btab
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :left *slide-size*)
-                  (draw-page text-buf scr)))
+                  (draw-page scr text-buf)))
       (crt:bind scr :up
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :up)
-                  (draw-page text-buf scr)))
+                  (draw-page scr text-buf)))
       (crt:bind scr :down
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :down)
-                  (draw-page text-buf scr)))
+                  (draw-page scr text-buf)))
       (crt:bind scr :left
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :left)
-                  (draw-page text-buf scr)))
+                  (draw-page scr text-buf)))
       (crt:bind scr :right
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :right)
-                  (draw-page text-buf scr)))
+                  (draw-page scr text-buf)))
       (crt:bind scr #\newline
                 (lambda (w e)
                   (declare (ignore w e))
                   (cursor-newline scr)
-                  (draw-page text-buf scr)))
+                  (draw-page scr text-buf)))
       (crt:bind scr t
                 (lambda (w e)
                   (declare (ignore w))
@@ -105,6 +105,6 @@
                          (x (cadr pos)))
                     (setq text-buf (add-char text-buf e y x)))
                   (crt:move-direction scr :right)
-                  (draw-page text-buf scr)))
-      (draw-page text-buf scr)
+                  (draw-page scr text-buf)))
+      (draw-page scr text-buf)
       (crt:run-event-loop scr))))
