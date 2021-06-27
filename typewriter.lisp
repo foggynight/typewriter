@@ -80,15 +80,27 @@
 ;;; MAIN SECTION ---------------------------------------------------------------
 
 (defun main ()
-  (let ((args (uiop:command-line-arguments))
-        (page nil))
+  (let* ((args (uiop:command-line-arguments))
+         (filename (car args))
+         (page nil))
     (when (or (< (length args) 1)
               (> (length args) 1))
       (format t "typewriter: Wrong number of arguments~%Usage: typewriter FILENAME~%")
       (exit))
-    (setq page (read-page-from-file (car args)))
-    (crt:with-screen (scr :input-echoing nil)
-      (crt:bind scr #\esc 'exit-event-loop)
+    (setq page (read-page-from-file filename))
+    (crt:with-screen (scr :input-echoing nil
+                          :process-control-chars nil)
+
+      ;;; -- Control Command Events --
+      ;; Quit the program
+      (crt:bind scr #\ 'exit-event-loop)
+      ;; Save page to file
+      (crt:bind scr #\
+                (lambda (w e)
+                  (declare (ignore w e))
+                  (write-page-to-file filename page)))
+
+      ;;; -- Movement Events --
       (crt:bind scr :backspace
                 (lambda (w e)
                   (declare (ignore w e))
@@ -129,6 +141,10 @@
                   (declare (ignore w e))
                   (cursor-newline scr)
                   (draw-page scr page)))
+
+      ;;; -- Print Events --
+      ;; For any unbound character: add that character to the page at the cursor
+      ;; position, and move the cursor position forward.
       (crt:bind scr t
                 (lambda (w e)
                   (declare (ignore w))
@@ -138,5 +154,6 @@
                     (setq page (add-char page e y x)))
                   (crt:move-direction scr :right)
                   (draw-page scr page)))
+
       (draw-page scr page)
       (crt:run-event-loop scr))))
