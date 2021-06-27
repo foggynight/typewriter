@@ -29,19 +29,19 @@
 
 ;;: PAGE SECTION ---------------------------------------------------------------
 
-(defun add-char (text-buf char y x)
-  (let ((text-buf-len (length text-buf)))
-    (unless (> text-buf-len y)
-      (let ((new-lines (make-list (1+ (- y text-buf-len)))))
+(defun add-char (page char y x)
+  (let ((page-len (length page)))
+    (unless (> page-len y)
+      (let ((new-lines (make-list (1+ (- y page-len)))))
         (setq new-lines (map 'list #'make-line new-lines))
-        (setq text-buf (append text-buf new-lines)))))
-  (let ((line (car (nthcdr y text-buf))))
+        (setq page (append page new-lines)))))
+  (let ((line (car (nthcdr y page))))
     (if (> (length line) x)
         (setf (aref line x) char)
         (progn (loop while (< (length line) x)
                      do (vector-push-extend #\space line))
                (vector-push-extend char line))))
-  text-buf)
+  page)
 
 ;;: FILE SECTION ---------------------------------------------------------------
 
@@ -51,10 +51,10 @@
           while line
           collect (string-to-line line))))
 
-(defun write-page-to-file (filename text-buf)
+(defun write-page-to-file (filename page)
   (let ((out-file (open filename :direction :output
                                  :if-exists :supersede)))
-    (dolist (line text-buf)
+    (dolist (line page)
       (format out-file "~A~%" line))
     (close out-file)))
 
@@ -65,10 +65,10 @@
          (y (car pos)))
     (crt:move scr (1+ y) 0)))
 
-(defun draw-page (scr text-buf)
+(defun draw-page (scr page)
   (crt:save-excursion scr
     (crt:move scr 0 0)
-    (dolist (line text-buf)
+    (dolist (line page)
       (when (> (length line) 0)
         (crt:add scr line)
         (cursor-newline scr)))
@@ -77,57 +77,57 @@
 ;;; MAIN SECTION ---------------------------------------------------------------
 
 (defun main ()
-  (let ((text-buf (read-page-from-file "test.txt")))
+  (let ((page (read-page-from-file "test.txt")))
     (crt:with-screen (scr :input-echoing nil)
       (crt:bind scr #\esc 'exit-event-loop)
       (crt:bind scr :backspace
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :left)
-                  (draw-page scr text-buf)))
+                  (draw-page scr page)))
       (crt:bind scr #\tab
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :right *slide-size*)
-                  (draw-page scr text-buf)))
+                  (draw-page scr page)))
       (crt:bind scr :btab
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :left *slide-size*)
-                  (draw-page scr text-buf)))
+                  (draw-page scr page)))
       (crt:bind scr :up
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :up)
-                  (draw-page scr text-buf)))
+                  (draw-page scr page)))
       (crt:bind scr :down
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :down)
-                  (draw-page scr text-buf)))
+                  (draw-page scr page)))
       (crt:bind scr :left
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :left)
-                  (draw-page scr text-buf)))
+                  (draw-page scr page)))
       (crt:bind scr :right
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :right)
-                  (draw-page scr text-buf)))
+                  (draw-page scr page)))
       (crt:bind scr #\newline
                 (lambda (w e)
                   (declare (ignore w e))
                   (cursor-newline scr)
-                  (draw-page scr text-buf)))
+                  (draw-page scr page)))
       (crt:bind scr t
                 (lambda (w e)
                   (declare (ignore w))
                   (let* ((pos (crt:cursor-position scr))
                          (y (car pos))
                          (x (cadr pos)))
-                    (setq text-buf (add-char text-buf e y x)))
+                    (setq page (add-char page e y x)))
                   (crt:move-direction scr :right)
-                  (draw-page scr text-buf)))
-      (draw-page scr text-buf)
+                  (draw-page scr page)))
+      (draw-page scr page)
       (crt:run-event-loop scr))))
