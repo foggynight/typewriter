@@ -6,6 +6,7 @@
 ;;;
 
 (require :croatoan)
+(require :uiop)
 
 ;;; CONFIG SECTION -------------------------------------------------------------
 
@@ -75,7 +76,13 @@
 ;;; MAIN SECTION ---------------------------------------------------------------
 
 (defun main ()
-  (let ((page (read-page-from-file "test.txt")))
+  (let ((args (uiop:command-line-arguments))
+        (page nil))
+    (when (or (< (length args) 1)
+              (> (length args) 1))
+      (format t "typewriter: Wrong number of arguments~%Usage: typewriter FILENAME~%")
+      (exit))
+    (setq page (read-page-from-file (car args)))
     (crt:with-screen (scr :input-echoing nil)
       (crt:bind scr #\esc 'exit-event-loop)
       (crt:bind scr :backspace
