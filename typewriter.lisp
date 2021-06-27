@@ -52,11 +52,10 @@
           collect (string-to-line line))))
 
 (defun write-page-to-file (filename page)
-  (let ((out-file (open filename :direction :output
-                                 :if-exists :supersede)))
+  (with-open-file (stream filename :direction :output
+                                   :if-exists :supersede)
     (dolist (line page)
-      (format out-file "~A~%" line))
-    (close out-file)))
+      (format stream "~A~%" line))))
 
 ;;; SCREEN SECTION -------------------------------------------------------------
 
