@@ -7,16 +7,27 @@
 
 (require :croatoan)
 
+;;; CONFIG SECTION -------------------------------------------------------------
+
 (defparameter *initial-line-size* 2)
 
 (defparameter *slide-size* 4)
 
-(defun init-line (&optional arg)
+;;; LINE SECTION ---------------------------------------------------------------
+
 (defun make-line (&optional arg)
   (declare (ignore arg))
   (make-array *initial-line-size* :adjustable t
                                   :element-type 'character
                                   :fill-pointer 0))
+
+(defun string-to-line (string)
+  (let ((line (make-line)))
+    (loop for char across string
+          do (vector-push-extend char line))
+    line))
+
+;;: PAGE SECTION ---------------------------------------------------------------
 
 (defun add-char (text-buf char y x)
   (let ((text-buf-len (length text-buf)))
@@ -32,6 +43,23 @@
                (vector-push-extend char line))))
   text-buf)
 
+;;: FILE SECTION ---------------------------------------------------------------
+
+(defun read-page-from-file (filename)
+  (with-open-file (stream filename :if-does-not-exist :create)
+    (loop for line = (read-line stream nil)
+          while line
+          collect (string-to-line line))))
+
+(defun write-page-to-file (filename text-buf)
+  (let ((out-file (open filename :direction :output
+                                 :if-exists :supersede)))
+    (dolist (line text-buf)
+      (format out-file "~A~%" line))
+    (close out-file)))
+
+;;; SCREEN SECTION -------------------------------------------------------------
+
 (defun cursor-newline (scr)
   (let* ((pos (crt:cursor-position scr))
          (y (car pos)))
@@ -46,15 +74,10 @@
         (cursor-newline scr)))
     (crt:refresh scr)))
 
-(defun write-page-to-file (text-buf name)
-  (let ((out-file (open name :direction :output
-                             :if-exists :supersede)))
-    (dolist (line text-buf)
-      (format out-file "~A~%" line))
-    (close out-file)))
+;;; MAIN SECTION ---------------------------------------------------------------
 
 (defun main ()
-  (let ((text-buf '()))
+  (let ((text-buf (read-page-from-file "test.txt")))
     (crt:with-screen (scr :input-echoing nil)
       (crt:bind scr #\esc 'exit-event-loop)
       (crt:bind scr :backspace
