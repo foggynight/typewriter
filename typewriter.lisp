@@ -14,7 +14,7 @@
 
 (defparameter *initial-line-size* 81)
 
-(defparameter *slide-size* 4)
+(defparameter *slide-width* 4)
 
 ;;; LINE SECTION ---------------------------------------------------------------
 
@@ -140,8 +140,8 @@
                                     (crt:move-direction scr ,dir))
                                 (screen-draw-page scr page)))))
         (bind :backspace :left)
-        (bind #\tab :right *slide-size*)
-        (bind :btab :left *slide-size*)
+        (bind #\tab :right *slide-width*)
+        (bind :btab :left *slide-width*)
         (bind :up :up)
         (bind :down :down)
         (bind :left :left)
