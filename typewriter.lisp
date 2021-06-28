@@ -30,11 +30,27 @@
           do (vector-push-extend char line))
     line))
 
+;;; CURSOR SECTION -------------------------------------------------------------
+
+(defclass cursor ()
+  ((y :accessor y
+      :initarg :y)
+   (x :accessor x
+      :initarg :x)))
+
+(defmethod move ((object cursor) direction &optional (n 1))
+  (flet ((multiply (x) (* n x)))
+    (let* ((dir (crt:get-direction direction))
+           (offset (if (> n 1)
+                       (mapcar #'multiply dir)
+                       dir)))
+      (setf (y object) (+ (y object) (car offset)))
+      (setf (x object) (+ (x object) (cadr offset))))))
+
 ;;: PAGE SECTION ---------------------------------------------------------------
 
 (defclass page ()
-  ((text-buffer :accessor text-buffer)
-   (cursor :accessor cursor)))
+  ((text-buffer :accessor text-buffer)))
 
 (defmethod line-count ((object page))
   (length (text-buffer object)))
@@ -96,6 +112,7 @@
 (defun main ()
   (let* ((args (uiop:command-line-arguments))
          (filename (car args))
+         (cursor (make-instance 'cursor :y 0 :x 0))
          (page nil))
     (when (or (< (length args) 1)
               (> (length args) 1))
