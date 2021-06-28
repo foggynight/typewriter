@@ -45,7 +45,9 @@
                        (mapcar #'multiply dir)
                        dir)))
       (setf (y object) (+ (y object) (car offset)))
-      (setf (x object) (+ (x object) (cadr offset))))))
+      (when (< (y object) 0) (setf (y object) 0))
+      (setf (x object) (+ (x object) (cadr offset)))
+      (when (< (x object) 0) (setf (x object) 0)))))
 
 ;;; PAGE SECTION ---------------------------------------------------------------
 
