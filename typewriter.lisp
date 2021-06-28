@@ -47,7 +47,7 @@
       (setf (y object) (+ (y object) (car offset)))
       (setf (x object) (+ (x object) (cadr offset))))))
 
-;;: PAGE SECTION ---------------------------------------------------------------
+;;; PAGE SECTION ---------------------------------------------------------------
 
 (defclass page ()
   ((text-buffer :accessor text-buffer)))
@@ -72,7 +72,7 @@
                      do (vector-push-extend #\space line))
                (vector-push-extend char line)))))
 
-;;: FILE SECTION ---------------------------------------------------------------
+;;; FILE SECTION ---------------------------------------------------------------
 
 (defun read-page-from-file (filename)
   (let ((page (make-instance 'page)))
