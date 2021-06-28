@@ -63,6 +63,8 @@
 ;;; SCREEN SECTION -------------------------------------------------------------
 
 (defun cursor-newline (scr)
+(defun screen-center-cursor (scr)
+  (apply #'crt:move (cons scr (crt:center-position scr))))
   (let* ((pos (crt:cursor-position scr))
          (y (car pos)))
     (crt:move scr (1+ y) 0)))
@@ -90,6 +92,7 @@
     (setq page (read-page-from-file filename))
     (crt:with-screen (scr :input-echoing nil
                           :process-control-chars nil)
+      (screen-center-cursor scr)
 
       ;;; -- Control Command Events --
       ;; Quit the program
