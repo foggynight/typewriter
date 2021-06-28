@@ -131,41 +131,22 @@
                   (write-page-to-file filename page)))
 
       ;;; -- Movement Events --
-      (crt:bind scr :backspace
-                (lambda (w e)
-                  (declare (ignore w e))
-                  (crt:move-direction scr :left)
-                  (screen-draw-page scr page)))
-      (crt:bind scr #\tab
-                (lambda (w e)
-                  (declare (ignore w e))
-                  (crt:move-direction scr :right *slide-size*)
-                  (screen-draw-page scr page)))
-      (crt:bind scr :btab
-                (lambda (w e)
-                  (declare (ignore w e))
-                  (crt:move-direction scr :left *slide-size*)
-                  (screen-draw-page scr page)))
-      (crt:bind scr :up
-                (lambda (w e)
-                  (declare (ignore w e))
-                  (crt:move-direction scr :up)
-                  (screen-draw-page scr page)))
-      (crt:bind scr :down
-                (lambda (w e)
-                  (declare (ignore w e))
-                  (crt:move-direction scr :down)
-                  (screen-draw-page scr page)))
-      (crt:bind scr :left
-                (lambda (w e)
-                  (declare (ignore w e))
-                  (crt:move-direction scr :left)
-                  (screen-draw-page scr page)))
-      (crt:bind scr :right
-                (lambda (w e)
-                  (declare (ignore w e))
-                  (crt:move-direction scr :right)
-                  (screen-draw-page scr page)))
+      (macrolet ((bind (key dir &optional (n 1))
+                   `(crt:bind scr ,key
+                              (lambda (w e)
+                                (declare (ignore w e))
+                                (if (> ,n 1)
+                                    (crt:move-direction scr ,dir ,n)
+                                    (crt:move-direction scr ,dir))
+                                (screen-draw-page scr page)))))
+        (bind :backspace :left)
+        (bind #\tab :right *slide-size*)
+        (bind :btab :left *slide-size*)
+        (bind :up :up)
+        (bind :down :down)
+        (bind :left :left)
+        (bind :right :right))
+
       (crt:bind scr #\newline
                 (lambda (w e)
                   (declare (ignore w e))
