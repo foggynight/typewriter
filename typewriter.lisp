@@ -105,7 +105,7 @@
          (y (car pos)))
     (crt:move scr (1+ y) 0)))
 
-(defun screen-draw-page (scr page)
+(defun screen-draw-page (scr cursor page)
   (crt:save-excursion scr
     (crt:move scr 0 0)
     (dolist (line (text-buffer page))
@@ -137,14 +137,14 @@
                   (write-page-to-file filename page)))
 
       ;;; -- Movement Events --
-      (macrolet ((bind (key dir &optional (n 1))
+      (macrolet ((bind (key direction &optional (n 1))
                    `(crt:bind scr ,key
                               (lambda (w e)
                                 (declare (ignore w e))
                                 (if (> ,n 1)
-                                    (crt:move-direction scr ,dir ,n)
-                                    (crt:move-direction scr ,dir))
-                                (screen-draw-page scr page)))))
+                                    (move cursor ,direction ,n)
+                                    (move cursor ,direction))
+                                (screen-draw-page scr cursor page)))))
         (bind :backspace :left)
         (bind #\tab :right *slide-width*)
         (bind :btab :left *slide-width*)
@@ -156,8 +156,8 @@
       (crt:bind scr #\newline
                 (lambda (w e)
                   (declare (ignore w e))
-                  (screen-newline scr)
-                  (screen-draw-page scr page)))
+                  (newline cursor)
+                  (screen-draw-page scr cursor page)))
 
       ;;; -- Print Events --
       ;; For any unbound character: add that character to the page at the cursor
@@ -165,12 +165,9 @@
       (crt:bind scr t
                 (lambda (w e)
                   (declare (ignore w))
-                  (let* ((pos (crt:cursor-position scr))
-                         (y (car pos))
-                         (x (cadr pos)))
-                    (add-char page e y x))
-                  (crt:move-direction scr :right)
-                  (screen-draw-page scr page)))
+                  (add-char page e (y cursor) (x cursor))
+                  (move cursor :right)
+                  (screen-draw-page scr cursor page)))
 
-      (screen-draw-page scr page)
+      (screen-draw-page scr cursor page)
       (crt:run-event-loop scr))))
