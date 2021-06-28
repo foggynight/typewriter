@@ -49,6 +49,10 @@
       (setf (x object) (+ (x object) (cadr offset)))
       (when (< (x object) 0) (setf (x object) 0)))))
 
+(defmethod newline ((object cursor))
+  (setf (y object) (1+ (y object)))
+  (setf (x object) 0))
+
 ;;; PAGE SECTION ---------------------------------------------------------------
 
 (defclass page ()
