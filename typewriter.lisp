@@ -32,52 +32,64 @@
 
 ;;: PAGE SECTION ---------------------------------------------------------------
 
-(defun add-char (page char y x)
-  (let ((page-len (length page)))
-    (unless (> page-len y)
-      (let ((new-lines (make-list (1+ (- y page-len)))))
-        (setq new-lines (map 'list #'make-line new-lines))
-        (setq page (append page new-lines)))))
-  (let ((line (car (nthcdr y page))))
+(defclass page ()
+  ((text-buffer :accessor text-buffer)
+   (cursor :accessor cursor)))
+
+(defmethod line-count ((object page))
+  (length (text-buffer object)))
+
+(defmethod add-lines ((object page) line-list)
+  (setf (text-buffer object) (append (text-buffer object)
+                                     line-list)))
+
+(defmethod add-char ((object page) char y x)
+  (let ((page-line-count (line-count object)))
+    (unless (> page-line-count y)
+      (let ((new-line-list (make-list (1+ (- y page-line-count)))))
+        (setq new-line-list (map 'list #'make-line new-line-list))
+        (add-lines object new-line-list))))
+  (let ((line (car (nthcdr y (text-buffer object)))))
     (if (> (length line) x)
         (setf (aref line x) char)
         (progn (loop while (< (length line) x)
                      do (vector-push-extend #\space line))
-               (vector-push-extend char line))))
-  page)
+               (vector-push-extend char line)))))
 
 ;;: FILE SECTION ---------------------------------------------------------------
 
 (defun read-page-from-file (filename)
-  (with-open-file (stream filename :if-does-not-exist :create)
-    (loop for line = (read-line stream nil)
-          while line
-          collect (string-to-line line))))
+  (let ((page (make-instance 'page)))
+    (with-open-file (stream filename :if-does-not-exist :create)
+      (setf (text-buffer page)
+            (loop for line = (read-line stream nil)
+                  while line
+                  collect (string-to-line line))))
+    page))
 
 (defun write-page-to-file (filename page)
   (with-open-file (stream filename :direction :output
                                    :if-exists :supersede)
-    (dolist (line page)
+    (dolist (line (text-buffer page))
       (format stream "~A~%" line))))
 
 ;;; SCREEN SECTION -------------------------------------------------------------
 
-(defun cursor-newline (scr)
 (defun screen-center-cursor (scr)
   (apply #'crt:move (cons scr (crt:center-position scr))))
+
+(defun screen-newline (scr)
   (let* ((pos (crt:cursor-position scr))
          (y (car pos)))
     (crt:move scr (1+ y) 0)))
 
-(defun draw-page (scr page)
+(defun screen-draw-page (scr page)
   (crt:save-excursion scr
     (crt:move scr 0 0)
-    (dolist (line page)
+    (dolist (line (text-buffer page))
       (crt:add scr line)
-      (cursor-newline scr))
+      (screen-newline scr))
     (crt:refresh scr)))
-
-;; TODO Add move-command function (or macro?)
 
 ;;; MAIN SECTION ---------------------------------------------------------------
 
@@ -108,42 +120,42 @@
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :left)
-                  (draw-page scr page)))
+                  (screen-draw-page scr page)))
       (crt:bind scr #\tab
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :right *slide-size*)
-                  (draw-page scr page)))
+                  (screen-draw-page scr page)))
       (crt:bind scr :btab
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :left *slide-size*)
-                  (draw-page scr page)))
+                  (screen-draw-page scr page)))
       (crt:bind scr :up
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :up)
-                  (draw-page scr page)))
+                  (screen-draw-page scr page)))
       (crt:bind scr :down
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :down)
-                  (draw-page scr page)))
+                  (screen-draw-page scr page)))
       (crt:bind scr :left
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :left)
-                  (draw-page scr page)))
+                  (screen-draw-page scr page)))
       (crt:bind scr :right
                 (lambda (w e)
                   (declare (ignore w e))
                   (crt:move-direction scr :right)
-                  (draw-page scr page)))
+                  (screen-draw-page scr page)))
       (crt:bind scr #\newline
                 (lambda (w e)
                   (declare (ignore w e))
-                  (cursor-newline scr)
-                  (draw-page scr page)))
+                  (screen-newline scr)
+                  (screen-draw-page scr page)))
 
       ;;; -- Print Events --
       ;; For any unbound character: add that character to the page at the cursor
@@ -154,9 +166,9 @@
                   (let* ((pos (crt:cursor-position scr))
                          (y (car pos))
                          (x (cadr pos)))
-                    (setq page (add-char page e y x)))
+                    (add-char page e y x))
                   (crt:move-direction scr :right)
-                  (draw-page scr page)))
+                  (screen-draw-page scr page)))
 
-      (draw-page scr page)
+      (screen-draw-page scr page)
       (crt:run-event-loop scr))))
