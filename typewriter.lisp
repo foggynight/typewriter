@@ -124,9 +124,7 @@
       (screen-center-cursor scr)
 
       ;;; -- Control Command Events --
-      ;; Quit the program
       (crt:bind scr #\ 'crt:exit-event-loop)
-      ;; Save page to file
       (crt:bind scr #\
                 (lambda (w e)
                   (declare (ignore w e))
