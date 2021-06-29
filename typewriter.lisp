@@ -158,7 +158,6 @@
         (bind :down :down)
         (bind :left :left)
         (bind :right :right))
-
       (crt:bind scr #\newline
                 (lambda (w e)
                   (declare (ignore w e))
@@ -173,6 +172,14 @@
                   (declare (ignore w))
                   (add-char page e (y cursor) (x cursor))
                   (move cursor :right)
+                  (screen-draw-page scr cursor page)))
+
+      ;;; -- Misc Events --
+      ;; Window resize event -- Center screen cursor and draw page
+      (crt:bind scr :resize
+                (lambda (w e)
+                  (declare (ignore w e))
+                  (screen-center-cursor scr)
                   (screen-draw-page scr cursor page)))
 
       (screen-draw-page scr cursor page)
