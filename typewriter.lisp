@@ -110,8 +110,8 @@
          (center-y (car center))
          (center-x (cadr center))
          (start-x (- center-x (x cursor))))
-    (crt:clear scr)
     (crt:save-excursion scr
+      (crt:clear scr)
       (crt:move scr
                 (- center-y (y cursor))
                 start-x)
