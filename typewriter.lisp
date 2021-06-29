@@ -100,18 +100,24 @@
 (defun screen-center-cursor (scr)
   (apply #'crt:move (cons scr (crt:center-position scr))))
 
-(defun screen-newline (scr)
+(defun screen-newline (scr start-x)
   (let* ((pos (crt:cursor-position scr))
          (y (car pos)))
-    (crt:move scr (1+ y) 0)))
+    (crt:move scr (1+ y) start-x)))
 
 (defun screen-draw-page (scr cursor page)
-  (crt:save-excursion scr
-    (crt:move scr 0 0)
-    (dolist (line (text-buffer page))
-      (crt:add scr line)
-      (screen-newline scr))
-    (crt:refresh scr)))
+  (let* ((center (crt:center-position scr))
+         (center-y (car center))
+         (center-x (cadr center))
+         (start-x (- center-x (x cursor))))
+    (crt:clear scr)
+    (crt:save-excursion scr
+      (crt:move scr
+                (- center-y (y cursor))
+                start-x)
+      (dolist (line (text-buffer page))
+        (crt:add scr line)
+        (screen-newline scr start-x)))))
 
 ;;; MAIN SECTION ---------------------------------------------------------------
 
