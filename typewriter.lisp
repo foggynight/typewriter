@@ -1,11 +1,9 @@
-;;;
-;; --- typewriter.lisp ---
+;;; --- typewriter.lisp ---
 ;;
 ;; Typewriter inspired text editor.
 ;;
 ;; Copyright (C) 2021 Robert Coffey
 ;; Released under the GPLv2 license
-;;;
 
 (require :croatoan)
 (require :uiop)
