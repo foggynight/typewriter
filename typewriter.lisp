@@ -62,7 +62,7 @@ function to map a sequence of anything to empty lines."
     :initarg :x
     :documentation
     "Index of the character within its containing line on which the cursor is
-located.")
+located."))
   (:documentation
    "Cursor class used to identify the location on a page that will be affected
 by user input."))
