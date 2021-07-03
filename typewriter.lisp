@@ -43,6 +43,25 @@ function to map a sequence of anything to empty lines."
   "Convert a line to a string."
   (coerce line 'string))
 
+(defun line-blank-p (line)
+  "Determine if a line is blank, that is, if it contains only spaces."
+  (let ((is-blank t))
+    (loop for char across line
+          while is-blank
+          do (unless (eql char #\space)
+               (setq is-blank nil)))
+    is-blank))
+
+(defun trim-trailing-whitespace (line)
+  "Trim all whitespace from the end of a line."
+  (let ((last-char -1)
+        (walk 0))
+    (loop for char across line
+          do (unless (eql char #\space)
+               (setq last-char walk))
+             (incf walk))
+    (subseq line 0 (1+ last-char))))
+
 ;;; CURSOR SECTION -------------------------------------------------------------
 ;;
 ;; There are two categories of cursor in this program: text and screen cursors.
@@ -146,11 +165,26 @@ named filename."
     page))
 
 (defun write-page-to-file (filename page)
-  "Write the text content of a page to a file named filename."
-  (with-open-file (stream filename :direction :output
-                                   :if-exists :supersede)
-    (dolist (line (text-buffer page))
-      (format stream "~A~%" line))))
+  "Write the text content of a page to a file named filename.
+
+Before writing, text content is stripped of trailing empty lines and the
+remaining lines are stripped of trailing whitespace."
+  (let ((out-lines (text-buffer page)))
+    ;; Remove trailing empty lines
+    (let ((last-line -1)
+          (walk 0))
+      (dolist (line out-lines)
+        (unless (line-blank-p line)
+          (setq last-line walk))
+        (incf walk))
+      (setq out-lines (subseq out-lines 0 (1+ last-line))))
+    ;; Remove trailing whitespace
+    (dotimes (i (length out-lines))
+      (setf (nth i out-lines) (trim-trailing-whitespace (nth i out-lines))))
+    (with-open-file (stream filename :direction :output
+                                     :if-exists :supersede)
+      (dolist (line out-lines)
+        (format stream "~A~%" line)))))
 
 ;;; SCREEN SECTION -------------------------------------------------------------
 
