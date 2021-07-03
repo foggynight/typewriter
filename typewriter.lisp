@@ -10,9 +10,6 @@
 
 ;;; CONFIG SECTION -------------------------------------------------------------
 
-(defparameter *initial-line-size* 81
-  "Initial size of lines created by the make-line function.")
-
 (defparameter *slide-width* 4
   "Number of characters to slide the text cursor on slide commands.")
 
@@ -21,6 +18,9 @@
 ;; Lines are extendable vectors of characters which represent a line of text.
 ;; They do not include the newline character ending the line nor any other
 ;; string terminator.
+
+(defparameter *initial-line-size* 81
+  "Initial size of lines created by the make-line function.")
 
 (defun make-line (&optional arg)
   "Make an empty line.
