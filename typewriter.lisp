@@ -137,11 +137,13 @@ overwritten."
   "Create a new page with its text buffer filled with the contents of the file
 named filename."
   (let ((page (make-instance 'page)))
-    (with-open-file (stream filename :if-does-not-exist :create)
-      (setf (text-buffer page)
-            (loop for line = (read-line stream nil)
-                  while line
-                  collect (string-to-line line))))
+    (with-open-file (stream filename :if-does-not-exist nil)
+      (if stream
+          (setf (text-buffer page)
+                (loop for line = (read-line stream nil)
+                      while line
+                      collect (string-to-line line)))
+          (setf (text-buffer page) '())))
     page))
 
 (defun write-page-to-file (filename page)
