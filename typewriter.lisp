@@ -19,7 +19,7 @@
 ;; They do not include the newline character ending the line nor any other
 ;; string terminator.
 
-(defparameter *initial-line-size* 81
+(defparameter *initial-line-size* 80
   "Initial size of lines created by the make-line function.")
 
 (defun make-line (&optional arg)
