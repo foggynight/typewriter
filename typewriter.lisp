@@ -111,8 +111,7 @@ spaces to move the cursor in the given direction; the default is one."
 
 (defmethod add-lines ((object page) line-list)
   "Add a list of lines to the end of the text buffer of a page."
-  (setf (text-buffer object) (append (text-buffer object)
-                                     line-list)))
+  (setf (text-buffer object) (append (text-buffer object) line-list)))
 
 (defmethod add-char ((object page) char y x)
   "Add a character at the given y-x position of a page.
