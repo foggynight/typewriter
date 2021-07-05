@@ -46,6 +46,7 @@ typewriter FILENAME
 
 - SBCL
 - Quicklisp
+- ncurses
 - croatoan: `(ql:quickload :croatoan)`
 
 
