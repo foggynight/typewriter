@@ -1,7 +1,7 @@
 (asdf:defsystem :typewriter
   :author "Robert Coffey"
   :license "GPLv2"
-  :version "0.1.0"
+  :version "1.0.0"
 
   :build-operation "asdf:program-op"
   :build-pathname "../typewriter"
