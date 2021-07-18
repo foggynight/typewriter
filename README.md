@@ -13,7 +13,7 @@ under the cursor.
 Using SBCL and Quicklisp:
 ```sh
 sbcl --eval "(progn (ql:quickload :croatoan) (exit))"
-sbcl --load typewriter.lisp --eval "(save-lisp-and-die \"typewriter\" :toplevel #'main :executable t)"
+sbcl --load typewriter.asd --eval "(asdf:make :typewriter)"
 ```
 
 **Note:** Quicklisp must be added to the SBCL init file for the above commands
@@ -47,7 +47,7 @@ typewriter FILENAME
 - SBCL
 - Quicklisp
 - ncurses
-- croatoan: `(ql:quickload :croatoan)`
+- croatoan
 
 
 ## License
