@@ -13,7 +13,6 @@
     (setq page (read-page-from-file filename))
     (crt:with-screen (scr :input-echoing nil
                           :process-control-chars nil)
-      (screen-center-cursor scr)
 
       ;;; <CTRL> Command Events
       (crt:bind scr #\ 'crt:exit-event-loop)
@@ -62,5 +61,6 @@
                     (move cursor :right)
                     (screen-draw-page scr cursor page))))
 
+      (screen-center-cursor scr)
       (screen-draw-page scr cursor page)
       (crt:run-event-loop scr))))
