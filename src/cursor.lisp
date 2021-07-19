@@ -1,12 +1,12 @@
-;;; There are two categories of cursor in this program: text and screen cursors.
-;;;
-;;; Text cursors are used to identify the point in a page that will be affected
-;;; by user input. In this program the page moves rather than the cursor, so
-;;; text cursors do not move across the screen like traditional cursors.
-;;;
-;;; There is also a single screen cursor, which is handled by ncurses and moves
-;;; across the screen during draw operations, but is effectively always located
-;;; at the center of the screen from the user's perspective.
+;; There are two categories of cursor in this program: text and screen cursors.
+;;
+;; Text cursors are used to identify the point in a page that will be affected
+;; by user input. In this program the page moves rather than the cursor, so text
+;; cursors do not move across the screen like traditional cursors.
+;;
+;; There is also a single screen cursor, which is handled by ncurses and moves
+;; across the screen during draw operations, but is effectively always located
+;; at the center of the screen from the user's perspective.
 
 (in-package :typewriter)
 

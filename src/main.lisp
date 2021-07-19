@@ -15,14 +15,14 @@
                           :process-control-chars nil)
       (screen-center-cursor scr)
 
-      ;;; -- <CTRL> Command Events --
+      ;;; <CTRL> Command Events
       (crt:bind scr #\ 'crt:exit-event-loop)
       (crt:bind scr #\
                 (lambda (w e)
                   (declare (ignore w e))
                   (write-page-to-file filename page)))
 
-      ;;; -- Movement Events --
+      ;;; Movement Events
       (macrolet ((bind (key direction &optional (n 1))
                    `(crt:bind scr ,key
                               (lambda (w e)
@@ -44,14 +44,14 @@
                   (newline cursor)
                   (screen-draw-page scr cursor page)))
 
-      ;;; -- Window Events --
+      ;;; Window Events
       (crt:bind scr :resize
                 (lambda (w e)
                   (declare (ignore w e))
                   (screen-center-cursor scr)
                   (screen-draw-page scr cursor page)))
 
-      ;;; -- Print Events --
+      ;;; Print Events
       ;; For any unbound character: if the character is a standard character,
       ;; add it to the page and move the cursor, otherwise do nothing.
       (crt:bind scr t

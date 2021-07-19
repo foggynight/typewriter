@@ -1,6 +1,6 @@
-;;; Lines are extendable vectors of characters which represent a line of text.
-;;; They do not include the newline character ending the line nor any other
-;;; string terminator.
+;; Lines are extendable vectors of characters which represent a line of text.
+;; They do not include the newline character ending the line nor any other
+;; string terminator.
 
 (in-package :typewriter)
 
