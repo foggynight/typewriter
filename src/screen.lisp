@@ -21,14 +21,18 @@ cursor unmoved."
            (char-count (if (< first-char 0)
                            (+ width first-char)
                            width)))
-      (when (< first-char 0)
-        (crt:move-direction scr :right (- first-char))
-        (setq first-char 0))
-      (when (< first-char (length line))
-        (let ((line-to-draw (subseq line first-char)))
-          (when (< char-count (length line-to-draw))
-            (setq line-to-draw (subseq line-to-draw 0 char-count)))
-          (crt:save-excursion scr
+      ;; The screen cursor must be returned to its previous position after
+      ;; drawing a line, otherwise lines that run to the end of the page will
+      ;; cause the cursor to end up on the next line, causing the following line
+      ;; to be drawn in the wrong position.
+      (crt:save-excursion scr
+        (when (< first-char 0)
+          (crt:move-direction scr :right (- first-char))
+          (setq first-char 0))
+        (when (< first-char (length line))
+          (let ((line-to-draw (subseq line first-char)))
+            (when (< char-count (length line-to-draw))
+              (setq line-to-draw (subseq line-to-draw 0 char-count)))
             (crt:add scr (line-to-string line-to-draw))))))))
 
 (defun screen-draw-page (scr cursor page)
