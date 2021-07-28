@@ -23,7 +23,7 @@ to work correctly, this is done during the Quicklisp installation process.
 ## Usage
 
 ```sh
-typewriter FILENAME
+typewriter FILE
 ```
 
 ### Navigating Text
