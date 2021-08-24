@@ -15,9 +15,6 @@ sbcl --eval "(progn (ql:quickload :croatoan) (exit))"
 sbcl --load typewriter.asd --eval "(asdf:make :typewriter)"
 #+end_src
 
-*Note:* Quicklisp must be added to the SBCL init file for the above commands to
-work correctly, this is done during the Quicklisp installation process.
-
 * Usage
 
 #+begin_src shell
