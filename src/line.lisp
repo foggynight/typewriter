@@ -2,7 +2,7 @@
 ;; They do not include the newline character ending the line nor any other
 ;; string terminator.
 
-(in-package :typewriter)
+(in-package #:typewriter)
 
 (defparameter *initial-line-size* 80
   "Initial size of lines created by the make-line function.")

@@ -1,4 +1,4 @@
-(in-package :typewriter)
+(in-package #:typewriter)
 
 (defun main ()
   (let* ((args (uiop:command-line-arguments))

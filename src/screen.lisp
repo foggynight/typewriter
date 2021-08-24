@@ -1,4 +1,4 @@
-(in-package :typewriter)
+(in-package #:typewriter)
 
 (defun screen-center-cursor (scr)
   "Move the screen cursor to the center of the screen."

@@ -8,7 +8,7 @@
 ;; across the screen during draw operations, but is effectively always located
 ;; at the center of the screen from the user's perspective.
 
-(in-package :typewriter)
+(in-package #:typewriter)
 
 (defclass cursor ()
   ((y

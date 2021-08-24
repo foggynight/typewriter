@@ -2,7 +2,7 @@
 ;; list of lines. All pages are associated with a file where their text content
 ;; is read from/written to.
 
-(in-package :typewriter)
+(in-package #:typewriter)
 
 (defclass page ()
   ((text-buffer

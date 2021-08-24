@@ -1,4 +1,4 @@
-(asdf:defsystem :typewriter
+(asdf:defsystem #:typewriter
   :description "Typewriter inspired text editor."
   :author "Robert Coffey"
   :license "GPLv2"

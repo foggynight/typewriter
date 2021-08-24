@@ -1,4 +1,4 @@
-(in-package :typewriter)
+(in-package #:typewriter)
 
 (defun read-page-from-file (filename)
   "Create a new page with its text buffer filled with the contents of the file

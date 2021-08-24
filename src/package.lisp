@@ -1,3 +1,3 @@
-(defpackage :typewriter
-  (:use :cl)
-  (:export :main))
+(defpackage #:typewriter
+  (:use #:cl)
+  (:export #:main))
