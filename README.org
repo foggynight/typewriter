@@ -3,9 +3,9 @@
 * Description
 
 =typewriter= is a text editor inspired by the classic typewriter experience: the
-text slides rather than the cursor, there is no backspace or delete (only
-'white-out' using the space character), and character inputs overwrite anything
-under the cursor.
+text slides rather than the cursor, character inputs overwrite anything under
+the cursor, and there is no backspace or delete, only 'white-out' using the
+space character.
 
 * Installation
 
@@ -47,8 +47,8 @@ typewriter FILE
 Copyright (C) 2020-2021 Robert Coffey
 
 This is free software: you can redistribute it and/or modify it under the terms
-of the GNU General Public License version 2 as published by the Free Software
+of the GNU General Public License version 3 as published by the Free Software
 Foundation.
 
-You should have received a copy of the GNU General Public License version 2
-along with this software. If not, see [[https://www.gnu.org/licenses/gpl-2.0][GPLv2]].
+You should have received a copy of the GNU General Public License version 3
+along with this software. If not, see [[https://www.gnu.org/licenses/gpl-3.0][GPLv3]].
