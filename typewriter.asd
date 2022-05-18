@@ -2,7 +2,7 @@
   :description "Typewriter inspired text editor."
   :author "Robert Coffey"
   :license "GPLv3"
-  :version "1.0.4"
+  :version "1.0.5"
 
   :build-operation "asdf:program-op"
   :build-pathname "../typewriter"
