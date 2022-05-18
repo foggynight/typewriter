@@ -1,7 +1,7 @@
 (asdf:defsystem #:typewriter
   :description "Typewriter inspired text editor."
   :author "Robert Coffey"
-  :license "GPLv2"
+  :license "GPLv3"
   :version "1.0.4"
 
   :build-operation "asdf:program-op"
